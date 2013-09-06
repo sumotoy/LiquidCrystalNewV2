@@ -51,9 +51,9 @@ and has all new features enabled.
 
 Last Changes:-------------------------------------------------------------------------------------------------
 
-HardwareSPI version working
-SoftwareSPI version working
+ - HardwareSPI version working
+ - SoftwareSPI version working
 
 Not Tested yet:-----------------------------------------------------------------------------------------------
 
-LiquidCrystalNew has not been tested
+ - LiquidCrystalNew has not been tested
