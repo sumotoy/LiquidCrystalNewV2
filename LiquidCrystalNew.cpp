@@ -132,7 +132,7 @@ void LiquidCrystalNew::initChip(uint8_t dotsize, byte enPin) {
 void LiquidCrystalNew::send(uint8_t value, byte mode) {
 	byte en = _en1;
 	if (_multipleChip && _chip) en = _en2;
-	delayMicroseconds(DELAYPERCHAR);
+	//delayMicroseconds(DELAYPERCHAR);
 	setDataMode(mode);					
 	#if defined(__FASTSPI)		
 		digitalWriteFast(_data_pins[0],value & 0x10);
