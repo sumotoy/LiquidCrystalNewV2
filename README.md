@@ -15,14 +15,14 @@ additional processor pin (in GPIO's version of course).
 
 Goals:
 
- - fast.
- - totally compatible with standard LiquidCrystal (apart the bads)
+ - FAST ! ! !
+ - totally compatible with standard LiquidCrystal (apart the bads, sorry Tom!)
  - small memory impact.
  - compact and small code.
  - large 2 HD44780 chip display capable.
- - large selection of GPIO or Shift Register to save pins.
+ - large selection of common GPIO or Shift Register to save MC pins.
  - cursor position from memory.
- - backlight driving.
+ - backlight driving included.
 
 This is the first release, alpha but SPI and Software SPI working. Wait next release for an usable version
 
@@ -67,6 +67,8 @@ Last Changes:-------------------------------------------------------------------
 
  - HardwareSPI version working
  - SoftwareSPI version working
+ 
+ Library seem useable even if in alpha state but not for production jet (bugs still present and methods will change)
 
 Not Tested yet:-----------------------------------------------------------------------------------------------
 
