@@ -38,7 +38,7 @@ Using Francisco Malpartida LCDiSpeed and performanceLCD as reference here's the 
  - Francisco Malpartida LiquidCrystal_SPI (extension module that I wrote): 143us
  - LiquidTWI2: over 500us
  - LiquidCrystalHSPI (this library, just standard SPI from any MC): 101us (!)
- - 
+
 I will optimize to get better results but please consider that I'm not using any strange port manipulation (oops, just one
 for CS pin but in the final release will be compatible with any MC!!!)
 
