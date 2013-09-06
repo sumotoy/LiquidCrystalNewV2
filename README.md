@@ -47,6 +47,12 @@ Same as above but uses ANY 3 pin to drive an MCP23s08. It also has HAEN enabled 
 chips if you use my incoming software SPI library. It's slower than hardware one (around 700us) but I will optimize to
 get faster
 
+[LiquidCrystalSR]
+Not Yet
+
+[LiquidCrystalTWI]
+Not yet
+
 [LiquidCrystalNew]
 This is the classic 4bit mode hardwired method, exact like standard LiquidCrystal. However it can drive 2 HD44780 chip displays
 and has all new features enabled.
