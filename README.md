@@ -73,5 +73,6 @@ Not Tested yet:-----------------------------------------------------------------
  - LiquidCrystalNew has not been tested
 
 Pin Connection:-----------------------------------------------------------------------------------------------
+
 Soon will be posted but if you are in a hurry to try this library consult the old library in my GitHub repository,
 file LiquidCrystalNew.h
