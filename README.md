@@ -30,7 +30,7 @@ Goals:
  - backlight driving included.
 
 <div><b>ATTENTION!!!</b></div>
-<b>This is the first release, alpha but SPI and Software SPI working. Wait next release for an usable version!!!</b>
+<b>This is the first EXPERIMENTAL release. Wait a beta release for an usable version!!!</b>
 
 Description of the INSTANCES:---------------------------------------------------------------------------------
 
