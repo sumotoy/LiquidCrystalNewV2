@@ -43,11 +43,39 @@ Using Francisco Malpartida LCDiSpeed and performanceLCD as reference here's the 
 I will optimize to get better results but please consider that I'm not using any strange port manipulation (oops, just one
 for CS pin but in the final release will be compatible with any MC!!!)
 
+MCP23s08/MCP23008 connections
+
+        computer side              LCD side
+                           
+        sck (13)  -> [|--U--|] <- +5v
+                     [|     |] <- background led driver out
+        miso (11) -> [|     |] <- D7
+        adrs*     -> [|     |] <- D6
+        adrs*     -> [|     |] <- D5
+        +5V-(10k)--> [|     |] <- D4
+        CS (10)   -> [|     |] <- E
+                     [|     |] <- RS
+        gnd       -> [|_____|] <- EN2 (if needed)
+
 [<b>LiquidCrystalSSPI</b>]
 
 Same as above but uses ANY 3 pin to drive an MCP23s08. It also has HAEN enabled so pins can be shared with other 7 MCP23sXX
 chips if you use my incoming software SPI library. It's slower than hardware one (around 700us) but I will optimize to
-get faster
+get faster.
+
+MCP23s08/MCP23008 connections
+
+        computer side              LCD side
+                           
+        soft SCK  -> [|--U--|] <- +5v
+                     [|     |] <- background led driver out
+       soft MISO  -> [|     |] <- D7
+        adrs*     -> [|     |] <- D6
+        adrs*     -> [|     |] <- D5
+        +5V-(10k)--> [|     |] <- D4
+         soft CS  -> [|     |] <- E
+                     [|     |] <- RS
+        gnd       -> [|_____|] <- EN2 (if needed)
 
 [<b>LiquidCrystalSR</b>]
 
@@ -74,10 +102,6 @@ Not Tested yet:-----------------------------------------------------------------
 
  - LiquidCrystalNew has not been tested
 
-Pin Connection:-----------------------------------------------------------------------------------------------
-
-Soon will be posted but if you are in a hurry to try this library consult the old library in my GitHub repository,
-file LiquidCrystalNew.h
 
 some words about <b>HAEN</b> ----------------------------------------------------------------------------------
 
