@@ -94,6 +94,11 @@ MCP23s08/MCP23008 connections
          soft CS  -> [|     |] <- E
                      [|     |] <- RS
         gnd       -> [|_____|] <- EN2 (if needed)
+        
+[<b>LiquidCrystalSSPIF</b>]
+
+Experimental.
+Same as above but uses <b>digitalIO</b> library by <b>William Greiman</b> to greatly improve performance.
 
 [<b>LiquidCrystalSR</b>]
 
