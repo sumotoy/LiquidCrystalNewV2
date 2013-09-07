@@ -67,7 +67,10 @@ Same functionalities of the library above and CS pin it's freely assegnable. Per
  - FPS : <b>297</b>
  - Write time: <b>3.3us</b>
 
-I can get a better performance by removing CS assignement (convert as constant), around <b>73us</b>, that is near the limit of Arduino uno!
+Numbers near Francisco Malpartida LiquidCrystal_SR but here I'm using an SPI and HAEN it's enabled so I can share more
+GPIO's on the same line and use sck and miso for other devices!
+I can get a better performance by removing CS assignement (convert as constant), around <b>73us</b>,
+ don't think it's possible squeeze more speed than that from MCP23Sxx whithout sacrifice some features of the library.
 
 [<b>LiquidCrystalSSPI</b>]
 
