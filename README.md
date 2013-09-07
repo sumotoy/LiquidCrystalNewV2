@@ -56,6 +56,18 @@ MCP23s08/MCP23008 connections
         CS (10)   -> [|     |] <- E
                      [|     |] <- RS
         gnd       -> [|_____|] <- EN2 (if needed)
+        
+[<b>LiquidCrystalHSPIF</b>]
+
+This is an experiment, Hardware SPI fast.
+Same as above but uses the really fast <b>digitalIO</b> library by <b>William Greiman</b>.
+Same functionalities of the library above and CS pin it's freely assegnable. Performance really improved!
+
+ - Byte transfer: <b>80us</b>
+ - FPS : <b>297</b>
+ - Write time: <b>3.3us</b>
+
+I can get a better performance by removing CS assignement (convert as constant), around <b>73us</b>, that is near the limit of Arduino uno!
 
 [<b>LiquidCrystalSSPI</b>]
 
