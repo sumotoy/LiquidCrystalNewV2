@@ -70,14 +70,11 @@ public:
    virtual size_t write(uint8_t value);
 #endif
 	using Print::write;
-	//inline void 	command(byte value)  {send(value, LOW);}
-	//inline void 	commandBoth(byte value)  {if (!_multipleChip) {send(value,LOW);} else {byte chipSave = _chip;_chip = 0;send(value,LOW);_chip = 2;send(value,LOW);_chip = chipSave;}}
 protected:
 	inline void 	command(byte value)  {send(value, LOW);}
 	inline void 	commandBoth(byte value)  {if (!_multipleChip) {send(value,LOW);} else {byte chipSave = _chip;_chip = 0;send(value,LOW);_chip = 2;send(value,LOW);_chip = chipSave;}}
 	byte 			_en1; 		// activated by a HIGH pulse.
 	byte 			_en2; 		// activated by a HIGH pulse.
-	//byte 			_data_pins[4]; 
 	byte 			_chip;
 	byte			_multipleChip;
 	int8_t 			_scroll_count;
