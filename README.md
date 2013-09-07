@@ -100,7 +100,7 @@ MCP23s08/MCP23008 connections
 [<b>LiquidCrystalSSPIF</b>]
 
 Experimental.
-Same as above but uses <b>digitalIO</b> library by <b>William Greiman</b> to greatly improve performance.
+Same as above but uses <b>digitalIO</b> library by <b>William Greiman</b> to greatly improve performance (around <b>75us!!!</b>).
 
 [<b>LiquidCrystalSR</b>]
 
