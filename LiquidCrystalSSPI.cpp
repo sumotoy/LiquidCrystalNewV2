@@ -137,7 +137,7 @@ void LiquidCrystalSSPI::initChip(uint8_t dotsize, byte enPin) {
 void LiquidCrystalSSPI::send(uint8_t value, byte mode) {
 	byte en = _en1;
 	if (_multipleChip && _chip) en = _en2;
-	delayMicroseconds(DELAYPERCHAR);
+	//delayMicroseconds(DELAYPERCHAR);
 	setDataMode(mode);					// I2C & SPI
 		bitWrite(_theData,LCDPIN_D4,value & 0x10);
 		bitWrite(_theData,LCDPIN_D5,value & 0x20);
