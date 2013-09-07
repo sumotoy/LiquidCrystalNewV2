@@ -1,5 +1,6 @@
-LiquidCrystalNew V2
+LiquidCrystalNew V2   
 ===================
+<div>Version <b>alpha02</b> </div>
 
 An optimized version of my old library LiquidCrystalNew.
 Purpose to this library is drive any HD44780 drived (or compatible) LCD easily, LiquidCrystal compatible commands
@@ -118,10 +119,9 @@ and has all new features enabled.
 
 Last Changes:-------------------------------------------------------------------------------------------------
 
- - HardwareSPI version working
- - SoftwareSPI version working
- 
- Library seem useable even if in alpha state but not for production jet (bugs still present and methods will change)
+ - HardwareSPI version working (v a01)
+ - SoftwareSPI version working (v a01)
+ - Increased speed (v a02)
 
 Not Tested yet:-----------------------------------------------------------------------------------------------
 
