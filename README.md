@@ -14,6 +14,8 @@ apparently disadvantages). In addition you can get cursor row/column position an
 additional processor pin (in GPIO's version of course). New library design let user to choose from many different method
 to save microcontroller pins, TWI (different chips), SPI (only MCP23Sxx series), Shift Register or connect directly display
 without use any GPIO's.
+GPIO connections to display can be easily modified by change the file utility/spi_config.h so it's easy to adapt existings
+ shield or piggyBack modules.
 
 Goals:
 
