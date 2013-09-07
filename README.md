@@ -29,7 +29,8 @@ Goals:
  - autowrap.
  - backlight driving included.
 
-This is the first release, alpha but SPI and Software SPI working. Wait next release for an usable version
+<div><b>ATTENTION!!!</b></div>
+<b>This is the first release, alpha but SPI and Software SPI working. Wait next release for an usable version!!!</b>
 
 Description of the INSTANCES:---------------------------------------------------------------------------------
 
@@ -37,16 +38,15 @@ Description of the INSTANCES:---------------------------------------------------
 
 This uses 3 wires SPI to drive an MCP23s08 connected to the LCD display as 4 bit. It uses HAEN so the 3 wires can be
 shared with other 7 additional MCP23Sxx chips.
-It's still not completely optimized but actually it's the 'fastest' of all libraries I tested!
-Using Francisco Malpartida LCDiSpeed and performanceLCD as reference here's the results on a Arduino Uno 16Mhz
+It's still not optimized and all in experiment mode but actually it's the 'fastest' of all libraries I tested!
+Using <i>Francisco Malpartida</b> <b>LCDiSpeed</b> and <b>performanceLCD</b> as reference here's the results on a Arduino Uno 16Mhz
 
- - Francisco Malpartida LiquidCrystal_SR (that uses FASTIO and a shift register):  <b>73.34us</b>
- - Francisco Malpartida LiquidCrystal_SPI (extension module that I wrote): <b>143us</b>
- - LiquidTWI2 (working in I2C): <b>over 500us</b>
- - LiquidCrystalHSPI (this library, just standard SPI from any MC): <b>101us</b> (!)
+ - Francisco Malpartida <b>LiquidCrystal_SR</b> (that uses FASTIO and a shift register):  <b>73.34us</b>
+ - Francisco Malpartida <b>LiquidCrystal_SPI</b> (extension module that I wrote): <b>143us</b>
+ - <b>LiquidTWI2</b> (working in I2C at 400Khz): <b>over 500us</b> (ouch...)
+ - <b>LiquidCrystalHSPI</b> (this library, standard SPI): <b>101us</b>
 
-I will optimize to get better results but please consider that I'm not using any strange port manipulation (oops, just one
-for CS pin but in the final release will be compatible with any MC!!!)
+
 
 MCP23s08/MCP23008 connections
 
