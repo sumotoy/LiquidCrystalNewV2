@@ -8,23 +8,21 @@
 #endif
 
 
-#include "LiquidCrystalSSPI.h"
+#include "LiquidCrystalHSPIF.h"
 
 //1/2 chip with software SPI GPIO (3 wire)
-LiquidCrystalSSPI::LiquidCrystalSSPI(const byte mosi,const byte sck,const byte cs,const byte chip,const byte adrs){
+LiquidCrystalHSPIF::LiquidCrystalHSPIF(const byte cs,const byte chip,const byte adrs){
 	byte e2;
 	if (chip == 0){
 		e2 = 255;
 	} else {
 		e2 = (1 << LCDPIN_EN2);
 	}
-	init(adrs,mosi,sck,cs,e2);
+	init(adrs,cs,e2);
 }
 
-void LiquidCrystalSSPI::init(const byte adrs,const byte mosi,const byte sck,const byte cs,const byte en2){
+void LiquidCrystalHSPIF::init(const byte adrs,const byte cs,const byte en2){
 	//pins
-	_sck = sck;
-	_mosi = mosi;
 	_cs = cs;
 	_en1 = (1 << LCDPIN_EN);
 	_en2 = en2;
@@ -52,22 +50,26 @@ void LiquidCrystalSSPI::init(const byte adrs,const byte mosi,const byte sck,cons
 	_row_offsets[3] = 0x54; // 84 - (83+nColumns) for line 3  -- so 80 characters tops out at #103 !
 	
 	_theData = 0b00000000;//  main data of the GPIO DATA PORT, better start with all 0,s
+    //fastPinConfig(MisoPin, MISO_MODE, MISO_LEVEL);
+
 }
 
-void LiquidCrystalSSPI::begin(byte cols, byte lines, uint8_t dotsize) {
-
-	pinMode(_sck,OUTPUT);
-	pinMode(_mosi,OUTPUT);
+void LiquidCrystalHSPIF::begin(byte cols, byte lines, uint8_t dotsize) {
+	//SPI BEGIN
+    fastPinConfig(_xMosiPin, MOSI_MODE, !MODE_CPHA(SPI_MODE));
+    fastPinConfig(_xSckPin,  SCK_MODE,   MODE_CPOL(SPI_MODE));
+	
+	//fastPinMode(_xCsPin,OUTPUT);
+	//fastDigitalWrite(_xCsPin,HIGH);
+ 	
 	pinMode(_cs,OUTPUT);
 	
-	clkport     = portOutputRegister(digitalPinToPort(_sck));
-	clkpinmask  = digitalPinToBitMask(_sck);
-	mosiport    = portOutputRegister(digitalPinToPort(_mosi));
-	mosipinmask = digitalPinToBitMask(_mosi);
 	csport      = portOutputRegister(digitalPinToPort(_cs));
 	cspinmask   = digitalPinToBitMask(_cs);
 	
 	*csport |= cspinmask;//cs hi
+
+
 	if (_adrs != 0){
 		writeByte(0x05,0b00101000);//HAEN on (IOCON)
 	} else {
@@ -91,7 +93,7 @@ void LiquidCrystalSSPI::begin(byte cols, byte lines, uint8_t dotsize) {
 	}
 }
 
-void LiquidCrystalSSPI::initChip(uint8_t dotsize, byte enPin) {  
+void LiquidCrystalHSPIF::initChip(uint8_t dotsize, byte enPin) {  
 	byte	displayfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS;
 	byte i;
 	if (_numlines > 1) displayfunction |= LCD_2LINE;
@@ -134,10 +136,10 @@ void LiquidCrystalSSPI::initChip(uint8_t dotsize, byte enPin) {
 }
 
 // write either command or data, with automatic 4/8-bit selection
-void LiquidCrystalSSPI::send(uint8_t value, byte mode) {
+void LiquidCrystalHSPIF::send(uint8_t value, byte mode) {
 	byte en = _en1;
 	if (_multipleChip && _chip) en = _en2;
-	delayMicroseconds(DELAYPERCHAR);
+	//delayMicroseconds(DELAYPERCHAR);
 	setDataMode(mode);					// I2C & SPI
 		bitWrite(_theData,LCDPIN_D4,value & 0x10);
 		bitWrite(_theData,LCDPIN_D5,value & 0x20);
@@ -153,7 +155,7 @@ void LiquidCrystalSSPI::send(uint8_t value, byte mode) {
 	pulseEnable(en);
 	}
 
-void LiquidCrystalSSPI::write4bits(byte value) {  //still used during init
+void LiquidCrystalHSPIF::write4bits(byte value) {  //still used during init
 	register byte v = value;
 	//byte *pinptr = _data_pins;
 	byte en = _en1;
@@ -168,44 +170,46 @@ void LiquidCrystalSSPI::write4bits(byte value) {  //still used during init
 
 
 //Set data mode, want send data or command?  0:COMMAND -- 1:DATA
-void LiquidCrystalSSPI::setDataMode(byte mode) {
+void LiquidCrystalHSPIF::setDataMode(byte mode) {
 	bitWrite(_theData,LCDPIN_RS,mode);
 }
 
-void LiquidCrystalSSPI::pulseEnable(byte enPin) {
+void LiquidCrystalHSPIF::pulseEnable(byte enPin) {
 	writeGpio(_theData | enPin);   // En HIGH
 	writeGpio(_theData & ~enPin);  // En LOW
 }
 
 
-void LiquidCrystalSSPI::writeByte(byte cmd,byte value){
+void LiquidCrystalHSPIF::writeByte(byte cmd,byte value){
   startSend();
-	altSPIwrite(cmd);
-	altSPIwrite(value);
+	spiTransfer(cmd);
+	spiTransfer(value);
   endSend();
 }
 
 //----------------------GPIO, start
-void LiquidCrystalSSPI::startSend(){
-	*csport &= ~cspinmask;
-	altSPIwrite(_adrs << 1);//in write, in read: SPI.transfer((addr << 1) | 1);		
+void LiquidCrystalHSPIF::startSend(){
+	*csport &= ~cspinmask;//low
+	//fastDigitalWrite(_xCsPin,LOW);
+	spiTransfer(_adrs << 1);//in write, in read: SPI.transfer((addr << 1) | 1);		
 }
 //--------------------GPIO, end
-void LiquidCrystalSSPI::endSend(){
-	*csport |= cspinmask;
+void LiquidCrystalHSPIF::endSend(){
+	*csport |= cspinmask;//hi
+	//fastDigitalWrite(_xCsPin,HIGH);
 }
 
-void LiquidCrystalSSPI::writeGpio(byte value){
+void LiquidCrystalHSPIF::writeGpio(byte value){
       // Only write HIGH the values of the ports that have been initialised as outputs updating the output shadow of the device
 	_theData = (value & ~(0x00));
   startSend();
-	altSPIwrite(0x09);//GPIO
-	altSPIwrite(_theData);
+	spiTransfer(0x09);//GPIO
+	spiTransfer(_theData);
   endSend();
 }
 
 
-void LiquidCrystalSSPI::backlight(byte val){
+void LiquidCrystalHSPIF::backlight(byte val){
 #ifdef BACKGND_LGHTINV
 	_backLight = !val;
 #else
@@ -215,15 +219,3 @@ void LiquidCrystalSSPI::backlight(byte val){
 	writeByte(0x09,_theData);
 }
 
-
-/* inline void LiquidCrystalSSPI::altSPIwrite(uint8_t data) {
- 	 for (uint8_t bit = 0x80;bit;bit >>= 1){
-		 *clkport &= ~clkpinmask;
-		 if(data & bit){
-			 *mosiport |=  mosipinmask;
-		 } else {
-			 *mosiport &= ~mosipinmask;
-		 }	
-		 *clkport |= clkpinmask;
-	 } 
-} */

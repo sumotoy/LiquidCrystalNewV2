@@ -9,6 +9,7 @@
 LiquidCrystalNew	KEYWORD1
 LiquidCrystalHSPI	KEYWORD1
 LiquidCrystalSSPI	KEYWORD1
+LiquidCrystalHSPIF	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
