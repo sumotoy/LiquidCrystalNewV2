@@ -55,6 +55,16 @@ void LiquidCrystalHSPI::init(const byte adrs,const byte cs,const byte en2){
 void LiquidCrystalHSPI::begin(byte cols, byte lines, uint8_t dotsize) {
 	SPI.begin();
 #if defined(__MK20DX128__)
+/*
+SPI_CLOCK_DIV2    //24.0 MHz ----> ???
+SPI_CLOCK_DIV4    //12.0 MHz ----> ok
+SPI_CLOCK_DIV6    //08.0 MHz ----> ok
+SPI_CLOCK_DIV8    //05.3 MHz ----> ok
+SPI_CLOCK_DIV16   //03.0 MHz ----> ok
+SPI_CLOCK_DIV32   //01.5 MHz ----> ok
+SPI_CLOCK_DIV64   //750 KHz
+SPI_CLOCK_DIV128  //375 Khz
+*/
 	SPI_CLOCK_DIV4;
 #elif defined(__arm__)//dunnoyet!
 	SPI_CLOCK_DIV4;
