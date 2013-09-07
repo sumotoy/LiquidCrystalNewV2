@@ -15,10 +15,8 @@ public:
 	virtual void 	backlight(byte value);
 private:
 	byte			_cs;		//used only in SPI, the CS pin
-	//byte 			_data_pins[4];
 	byte			_adrs;				//SPI address or I2C address
 	byte			_theData;			//8 bit of the GPIO chip or SR, not used in direct
-	//byte 			_rs_pin;
 	void 			init(const byte adrs,const byte cs,const byte en2);
 	void 			initChip(uint8_t dotsize, byte enPin);
 	void 			write4bits(byte value);
