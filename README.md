@@ -28,36 +28,36 @@ This is the first release, alpha but SPI and Software SPI working. Wait next rel
 
 Description of the INSTANCES:---------------------------------------------------------------------------------
 
-[LiquidCrystalHSPI]
+[<b>LiquidCrystalHSPI</b>]
 
 This uses 3 wires SPI to drive an MCP23s08 connected to the LCD display as 4 bit. It uses HAEN so the 3 wires can be
 shared with other 7 additional MCP23Sxx chips.
 It's still not completely optimized but actually it's the 'fastest' of all libraries I tested!
 Using Francisco Malpartida LCDiSpeed and performanceLCD as reference here's the results on a Arduino Uno 16Mhz
 
- - Francisco Malpartida LiquidCrystal_SR (that uses FASTIO and a shift register):  73.34us
- - Francisco Malpartida LiquidCrystal_SPI (extension module that I wrote): 143us
- - LiquidTWI2: over 500us
- - LiquidCrystalHSPI (this library, just standard SPI from any MC): 101us (!)
+ - Francisco Malpartida LiquidCrystal_SR (that uses FASTIO and a shift register):  <b>73.34us</b>
+ - Francisco Malpartida LiquidCrystal_SPI (extension module that I wrote): <b>143us</b>
+ - LiquidTWI2 (working in I2C): <b>over 500us</b>
+ - LiquidCrystalHSPI (this library, just standard SPI from any MC): <b>101us</b> (!)
 
 I will optimize to get better results but please consider that I'm not using any strange port manipulation (oops, just one
 for CS pin but in the final release will be compatible with any MC!!!)
 
-[LiquidCrystalSSPI]
+[<b>LiquidCrystalSSPI</b>]
 
 Same as above but uses ANY 3 pin to drive an MCP23s08. It also has HAEN enabled so pins can be shared with other 7 MCP23sXX
 chips if you use my incoming software SPI library. It's slower than hardware one (around 700us) but I will optimize to
 get faster
 
-[LiquidCrystalSR]
+[<b>LiquidCrystalSR</b>]
 
 Not Yet
 
-[LiquidCrystalTWI]
+[<b>LiquidCrystalTWI</b>]
 
 Not yet
 
-[LiquidCrystalNew]
+[<b>LiquidCrystalNew</b>]
 
 This is the classic 4bit mode hardwired method, exact like standard LiquidCrystal. However it can drive 2 HD44780 chip displays
 and has all new features enabled.
@@ -78,3 +78,13 @@ Pin Connection:-----------------------------------------------------------------
 
 Soon will be posted but if you are in a hurry to try this library consult the old library in my GitHub repository,
 file LiquidCrystalNew.h
+
+some words about <b>HAEN</b> ----------------------------------------------------------------------------------
+
+HAEN it's a feature of some Microchip MCP23Sxx GPIO chips that adds an addressing method (similar to I2C) on SPI bus.
+It works by add a fixed address above every command so only the addressed chip will react, for this reason using 
+non HAEN chip on the same bus it's not raccomanded and easily cause malfunctions. Of course 2 of the SPI pin can be
+always shared (sck and data) as normal happen, the real advantage of HAEN it's that you can use CS as well!
+HAEN not cause any performance degradation on those chips so I try to leave it always on since can help in busses
+where noise it's present byt my libraries can also disable it if you use 255 as address.
+
