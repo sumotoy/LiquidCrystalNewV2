@@ -11,17 +11,20 @@ corrected scrolling and after scrolling problems (like position of the cursor, e
 This library works ONLY in 4 bit mode since 8 bit has no apparent advantages (to me has only disadvantages) and WR has
 stuck to ground in SPI,SR,I2C versions to save GPIO pins for drive a second HD44780 if needed (even this has not
 apparently disadvantages). In addition you can get cursor row/column position and drive the backlight without use any
-additional processor pin (in GPIO's version of course).
+additional processor pin (in GPIO's version of course). New library design let user to choose from many different method
+to save microcontroller pins, TWI (different chips), SPI (only MCP23Sxx series), Shift Register or connect directly display
+without use any GPIO's.
 
 Goals:
 
- - FAST ! ! !
- - totally compatible with standard LiquidCrystal (apart the bads, sorry Tom!)
+ - F A S T ! ! !
+ - compatible with standard LiquidCrystal (apart the bads, sorry Tom!),
  - small memory impact.
  - compact and small code.
- - large 2 HD44780 chip display capable.
- - large selection of common GPIO or Shift Register to save MC pins.
+ - can drive large 2 HD44780 chip displays.
+ - large selection of popular GPIO or Shift Register chip to save MC pins.
  - cursor position from memory.
+ - autowrap.
  - backlight driving included.
 
 This is the first release, alpha but SPI and Software SPI working. Wait next release for an usable version
