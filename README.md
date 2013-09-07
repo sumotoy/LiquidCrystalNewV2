@@ -80,7 +80,7 @@ I can get a better performance by removing CS assignement (convert as constant),
 [<b>LiquidCrystalSSPI</b>]
 
 Same as above but uses ANY 3 pin to drive an MCP23s08. It also has HAEN enabled so pins can be shared with other 7 MCP23sXX
-chips if you use my incoming software SPI library. It's slower than hardware one (around 700us) but I will optimize to
+chips if you use my incoming software SPI library. It's slower than hardware one (around <b>378us</b>) but I will optimize to
 get faster.
 
 MCP23s08/MCP23008 connections
