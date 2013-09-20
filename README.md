@@ -24,7 +24,7 @@ Goals:
  - compatible with standard LiquidCrystal (apart the bads, sorry Tom!),
  - small memory impact.
  - compact and small code.
- - can drive large 2 HD44780 chip displays.
+ - can drive large 2xHD44780 chip displays.
  - large selection of popular GPIO or Shift Register chip to save MC pins.
  - cursor position from memory.
  - autowrap.
