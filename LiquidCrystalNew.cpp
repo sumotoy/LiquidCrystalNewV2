@@ -7,8 +7,8 @@
 	#include <Arduino.h>
 #endif
 
-
 #include "LiquidCrystalNew.h"
+
 #if defined(__FASTSWRITE2__)	
 #include "_utility/DigitalIO/DigitalPin.h"
 #endif
@@ -94,7 +94,7 @@ void LiquidCrystalNew::begin(byte cols, byte lines, uint8_t dotsize) {
 	}
 	
 	if (_backlightPin != 255){
-		#if defined(__FASTSWRITE3__)	
+		#if defined(__FASTSWRITE2__)	
 			fastPinMode(_backlightPin, OUTPUT);
 			fastDigitalWrite(_backlightPin, _backLight);
 		#else

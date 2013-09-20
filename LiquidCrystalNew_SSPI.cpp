@@ -10,6 +10,7 @@
 
 #include "LiquidCrystalNew_SSPI.h"
 
+
 //1/2 chip with software SPI GPIO (3 wire)
 LiquidCrystalNew_SSPI::LiquidCrystalNew_SSPI(const byte mosiPin,const byte clockPin,const byte csPin,const byte chip,const byte adrs){
 
@@ -47,10 +48,11 @@ LiquidCrystalNew_SSPI::LiquidCrystalNew_SSPI(const byte mosiPin,const byte clock
 
 
 void LiquidCrystalNew_SSPI::begin(byte cols, byte lines, uint8_t dotsize) {
+
+#if defined(__FASTSWRITE2__)
 	pinMode(_cs,OUTPUT);
 	pinMode(_clk,OUTPUT);
 	pinMode(_mosi,OUTPUT);
-#if defined(__FASTSWRITE2__)
     clkport     = portOutputRegister(digitalPinToPort(_clk));
     clkpinmask  = digitalPinToBitMask(_clk);
     mosiport    = portOutputRegister(digitalPinToPort(_mosi));
@@ -59,6 +61,9 @@ void LiquidCrystalNew_SSPI::begin(byte cols, byte lines, uint8_t dotsize) {
     cspinmask   = digitalPinToBitMask(_cs);
 	*csport |= cspinmask;//cs HI
 #else
+	pinMode(_cs,OUTPUT);
+	pinMode(_clk,OUTPUT);
+	pinMode(_mosi,OUTPUT);
 	digitalWrite(_cs, HIGH);
 #endif
 	delay(100);
@@ -218,7 +223,7 @@ void LiquidCrystalNew_SSPI::writeByte(byte cmd,byte value){
 
 inline void LiquidCrystalNew_SSPI::altSPIwrite(uint8_t d) {
 #if defined(__FASTSWRITE2__)
-  for(uint8_t bit = 0x80; bit; bit >>= 1) {
+  for (uint8_t bit = 0x80; bit; bit >>= 1) {
     *clkport &= ~clkpinmask;
     if(d & bit) *mosiport |=  mosipinmask;
     else        *mosiport &= ~mosipinmask;
