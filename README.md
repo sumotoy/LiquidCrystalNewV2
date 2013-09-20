@@ -9,7 +9,7 @@ fast and use less pin as possible. Actually this is the only library that can dr
 Respect old library this has been improved, uses much less memory and space since every method has a separate file.
 I have fixed a lot of stuff that never included in the standard LiquidCrystal as correct cursor position (now read from memory),
 corrected scrolling and after scrolling problems (like position of the cursor, etc)
-This library works ONLY in 4 bit mode since 8 bit has no apparent advantages (to me has only disadvantages) and WR has
+This library works ONLY in <b>4 bit mode</b> since 8 bit has no apparent advantages (to me has only disadvantages) and WR has
 stuck to ground in SPI,SR,I2C versions to save GPIO pins for drive a second HD44780 if needed (even this has not
 apparently disadvantages). In addition you can get cursor row/column position and drive the backlight without use any
 additional processor pin (in GPIO's version of course). New library design let user to choose from many different method
@@ -23,6 +23,7 @@ Goals:
  - F A S T ! ! !
  - compatible with standard LiquidCrystal (apart the bads, sorry Tom!).
  - compatiple with most MCU's.
+ - pin configurable to adapt other existing library.
  - small memory impact.
  - compact and small code.
  - can drive large 2xHD44780 chip displays.
