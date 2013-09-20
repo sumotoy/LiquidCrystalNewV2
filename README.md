@@ -1,6 +1,6 @@
 LiquidCrystalNew V2   
 ===================
-<div>Version <b>beta 0.8!!!</b> </div>
+<div>Version <b>beta 0.81!!!</b> </div>
 
 An optimized version of my old library LiquidCrystalNew.
 Purpose to this library is drive any HD44780 drived (or compatible) LCD easily, LiquidCrystal compatible commands
@@ -150,11 +150,11 @@ Last Changes:-------------------------------------------------------------------
  - HardwareSPI version working (v a01)
  - SoftwareSPI version working (v a01)
  - Increased speed (v a02)
- - First beta version with major changes and speed improvements (v b 0.8) <----
+ - First beta version with major changes and speed improvements (v b0.8)
+ - Fixed Software SPI (slow method) (v b0.81) <----
 
 Not Tested yet:-----------------------------------------------------------------------------------------------
 
- - LiquidCrystal_SSPI
  - LiquidCrystal_SHR still not working (next release will...)
 
 <b>Speed Test and comparison with other libraries:</b>---------------------------------------------------------------
