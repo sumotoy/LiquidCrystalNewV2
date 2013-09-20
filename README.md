@@ -48,7 +48,7 @@ shared with other 7 additional MCP23Sxx chips.
 It's still not fully optimized but actually it's the 'fastest' of all libraries I tested!
 
 
-MCP23s08/MCP23008 connections
+<b>MCP23S08</b> connections
 
         computer side              LCD side
                            
@@ -57,17 +57,19 @@ MCP23s08/MCP23008 connections
         miso (11) -> [|     |] <- D7
         adrs*     -> [|     |] <- D6
         adrs*     -> [|     |] <- D5
-        +5V-(10k)--> [|     |] <- D4
+        +5V-(4k7)--> [|     |] <- D4
         CS (10)   -> [|     |] <- E
                      [|     |] <- RS
         gnd       -> [|_____|] <- EN2 (if needed)
+        
+LCD's R/W to ground
         
 [<b>LiquidCrystal_SSPI</b>]
 
 Same as above but uses ANY 3 pin to drive an MCP23s08. It also has HAEN enabled so pins can be shared with other 7 MCP23sXX
 chips if you use my incoming software SPI library.
 
-MCP23s08/MCP23008 connections
+<b>MCP23S08</b> connections
 
         computer side              LCD side
                            
@@ -76,26 +78,70 @@ MCP23s08/MCP23008 connections
        soft MISO  -> [|     |] <- D7
         adrs*     -> [|     |] <- D6
         adrs*     -> [|     |] <- D5
-        +5V-(10k)--> [|     |] <- D4
+        +5V-(4k7)--> [|     |] <- D4
          soft CS  -> [|     |] <- E
                      [|     |] <- RS
         gnd       -> [|_____|] <- EN2 (if needed)
+
+LCD's R/W to ground
         
 [<b>LiquidCrystal_TWI</b>]
 
 This version uses 2 wire MCP23008 chip as GPIO and it's directly compatible with ladyada LCD piggyback. GPIO pins are freely configurable
 though a dedicated file so it can be easily adapted to other existing hardware design.
 
+<b>MCP23008</b> connections
+
+        computer side              LCD side
+                           
+             scl  -> [|--U--|] <- +5v
+             sda  -> [|     |] <- background led driver out
+        adrs*     -> [|     |] <- D7
+        adrs*     -> [|     |] <- D6
+        adrs*     -> [|     |] <- D5
+        +5V-(4k7)--> [|     |] <- D4
+                     [|     |] <- E
+                     [|     |] <- RS
+        gnd       -> [|_____|] <- EN2 (if needed)
+
+LCD's R/W to ground
+
 [<b>LiquidCrystal_TWI2</b>]
 
 This version uses 2 wire PCF8574 and PCF8574A chip as GPIO. GPIO pins are freely configurable
 though a dedicated file so it can be easily adapted to other existing hardware design.
 
+<b>PCF8574/PCF8574A</b> connections
+ 
+         adrs* A0 -> [|--U--|] <+ +5v
+         adrs* A1 -> [|     |] <= sda
+         adrs* A2 -> [|     |] <= scl
+              EN2 -> [|     |] 
+               RS -> [|     |] <- backlight (need driver*)
+               EN -> [|     |] <- D7
+               D4 -> [|     |] <- D6
+              gnd -> [|_____|] <- D5
+              
+LCD's R/W to ground
+
+
 [<b>LiquidCrystal_SHR</b>]
 
 This version uses 3 wire shift register chip 74XX595 as GPIO. GPIO pins are freely configurable
 though a dedicated file so it can be easily adapted to other existing hardware design.
-        
+
+<b>74xx595</b> connections
+
+               RS -> [|--U--|] <= +5v
+               EN -> [|     |] <- EN2
+               D4 -> [|     |] <- dta_pin
+               D5 -> [|     |] <= gnd 
+               D6 -> [|     |] <- strobe_pin
+               D7 -> [|     |] <- clk_pin
+        backlight -> [|     |] <= +5v
+             gnd  => [|_____|] 
+
+LCD's R/W to ground
 
 
 Last Changes:-------------------------------------------------------------------------------------------------
