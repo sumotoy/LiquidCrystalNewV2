@@ -82,12 +82,12 @@ MCP23s08/MCP23008 connections
         
 [<b>LiquidCrystal_TWI</b>]
 
-This version uses MCP23008 chip as GPIO and it's directly compatible with ladyada LCD piggyback. GPIO pins are freely configurable
+This version uses 2 wire MCP23008 chip as GPIO and it's directly compatible with ladyada LCD piggyback. GPIO pins are freely configurable
 though a dedicated file so it can be easily adapted to other existing hardware design.
 
 [<b>LiquidCrystal_TWI2</b>]
 
-This version uses PCF8574 and PCF8574A chip as GPIO. GPIO pins are freely configurable
+This version uses 2 wire PCF8574 and PCF8574A chip as GPIO. GPIO pins are freely configurable
 though a dedicated file so it can be easily adapted to other existing hardware design.
         
 
