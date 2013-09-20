@@ -1,6 +1,6 @@
 LiquidCrystalNew V2   
 ===================
-<div>Version <b>alpha02</b> </div>
+<div>Version <b>beta 0.8!!!</b> </div>
 
 An optimized version of my old library LiquidCrystalNew.
 Purpose to this library is drive any HD44780 drived (or compatible) LCD easily, LiquidCrystal compatible commands
@@ -30,23 +30,20 @@ Goals:
  - autowrap.
  - backlight driving included.
 
-<div><b>ATTENTION!!!</b></div>
-<b>This is the first EXPERIMENTAL release. Wait a beta release for an usable version!!!</b>
 
 Description of the INSTANCES:---------------------------------------------------------------------------------
+[<b>LiquidCrystalNew</b>]
 
-[<b>LiquidCrystalHSPI</b>]
+This is the basic and classic configuration where you connect your LCD directly to MCU without using any helper GPIO chip.
+Main difference from classic LiquidCrystal? It's much faster!!! Actually it's the fastest I have checked thanks to <b>William Greiman</b>
+DigitalPin library that works with many MCU's. I added support for Teensy3 to get faster response even on this microcontroller.
+
+
+[<b>LiquidCrystal_SPI</b>]
 
 This uses 3 wires SPI to drive an MCP23s08 connected to the LCD display as 4 bit. It uses HAEN so the 3 wires can be
 shared with other 7 additional MCP23Sxx chips.
 It's still not optimized and all in experiment mode but actually it's the 'fastest' of all libraries I tested!
-Using <i>Francisco Malpartida</b> <b>LCDiSpeed</b> and <b>performanceLCD</b> as reference here's the results on a Arduino Uno 16Mhz
-
- - Francisco Malpartida <b>LiquidCrystal_SR</b> (that uses FASTIO and a shift register):  <b>73.34us</b>
- - Francisco Malpartida <b>LiquidCrystal_SPI</b> (extension module that I wrote): <b>143us</b>
- - <b>LiquidTWI2</b> (working in I2C at 400Khz): <b>over 500us</b> (ouch...)
- - <b>LiquidCrystalHSPI</b> (this library, standard SPI): <b>101us</b>
-
 
 
 MCP23s08/MCP23008 connections
@@ -63,26 +60,10 @@ MCP23s08/MCP23008 connections
                      [|     |] <- RS
         gnd       -> [|_____|] <- EN2 (if needed)
         
-[<b>LiquidCrystalHSPIF</b>]
-
-This is an experiment, Hardware SPI fast.
-Same as above but uses the really fast <b>digitalIO</b> library by <b>William Greiman</b>.
-Same functionalities of the library above and CS pin it's freely assegnable. Performance really improved!
-
- - Byte transfer: <b>80us</b>
- - FPS : <b>297</b>
- - Write time: <b>3.3us</b>
-
-Numbers near Francisco Malpartida LiquidCrystal_SR but here I'm using an SPI and HAEN it's enabled so I can share more
-GPIO's on the same line and use sck and miso for other devices!
-I can get a better performance by removing CS assignement (convert as constant), around <b>73us</b>,
- don't think it's possible squeeze more speed than that from MCP23Sxx whithout sacrifice some features of the library.
-
-[<b>LiquidCrystalSSPI</b>]
+[<b>LiquidCrystal_SSPI</b>]
 
 Same as above but uses ANY 3 pin to drive an MCP23s08. It also has HAEN enabled so pins can be shared with other 7 MCP23sXX
-chips if you use my incoming software SPI library. It's slower than hardware one (around <b>378us</b>) but I will optimize to
-get faster.
+chips if you use my incoming software SPI library.
 
 MCP23s08/MCP23008 connections
 
@@ -98,23 +79,16 @@ MCP23s08/MCP23008 connections
                      [|     |] <- RS
         gnd       -> [|_____|] <- EN2 (if needed)
         
-[<b>LiquidCrystalSSPIF</b>]
+[<b>LiquidCrystal_TWI</b>]
 
-Experimental.
-Same as above but uses <b>digitalIO</b> library by <b>William Greiman</b> to greatly improve performance (around <b>75us!!!</b>).
+This version uses MCP23008 chip as GPIO and it's directly compatible with ladyada LCD piggyback. GPIO pins are freely configurable
+though a dedicated file so it can be easily adapted to other existing hardware design.
 
-[<b>LiquidCrystalSR</b>]
+[<b>LiquidCrystal_TWI2</b>]
 
-Not Yet
-
-[<b>LiquidCrystalTWI</b>]
-
-Not yet
-
-[<b>LiquidCrystalNew</b>]
-
-This is the classic 4bit mode hardwired method, exact like standard LiquidCrystal. However it can drive 2 HD44780 chip displays
-and has all new features enabled.
+This version uses PCF8574 and PCF8574A chip as GPIO. GPIO pins are freely configurable
+though a dedicated file so it can be easily adapted to other existing hardware design.
+        
 
 
 Last Changes:-------------------------------------------------------------------------------------------------
@@ -122,11 +96,67 @@ Last Changes:-------------------------------------------------------------------
  - HardwareSPI version working (v a01)
  - SoftwareSPI version working (v a01)
  - Increased speed (v a02)
+ - First beta version with major changes and speed improvements (v b 0.8) <----
 
 Not Tested yet:-----------------------------------------------------------------------------------------------
 
- - LiquidCrystalNew has not been tested
+ - LiquidCrystal_SSPI
 
+Speed Test and comparison with other libraries:---------------------------------------------------------------
+Speed tests where maded with the same MCU (arduino UNO/16Mhz), same sketch and an LCD of 2x20.
+
+  Direct Connection Test
+
+ +++ FPS TEST
+ - LiquidCrystal (classic)             :
+ - LiquidCrystal (francesco malpartida): 287,85fps
+ - LiquidCrystalNew (this library)     : <b>383fps</b>
+ +++ Byte XFer
+ - LiquidCrystal (classic)             :
+ - LiquidCrystal (francesco malpartida): 62us
+ - LiquidCrystalNew (this library)     : <b>83us</b>
+ +++ FTime
+ - LiquidCrystal (classic)             :
+ - LiquidCrystal (francesco malpartida): 3,47ms
+ - LiquidCrystalNew (this library)     : <b>2,61ms</b>
+
+  SPI GPIO chip helper test
+  Francesco Malpartida has not SPI support so I wrote a small addon.
+
+ +++ FPS TEST
+ - LiquidCrystal (classic)             :
+ - LiquidCrystal (francesco malpartida): 167,3fps
+ - LiquidCrystalNew (this library)     : <b>352fps</b>
+ +++ Byte XFer
+ - LiquidCrystal (classic)             :
+ - LiquidCrystal (francesco malpartida): 68us
+ - LiquidCrystalNew (this library)     : <b>83us</b>
+ +++ FTime
+ - LiquidCrystal (classic)             :
+ - LiquidCrystal (francesco malpartida): 5,98ms
+ - LiquidCrystalNew (this library)     : <b>2,84ms</b>
+
+ 
+  TWI GPIO chip helper test
+
+ +++ FPS TEST
+ - LiquidCrystal (classic)             :
+ - LiquidCrystal (francesco malpartida): 
+ - LiquidCrystalNew (this library)     : <b>48,57fps</b>
+ - LiquidTWI2                          : 49,57
+ +++ Byte XFer
+ - LiquidCrystal (classic)             :
+ - LiquidCrystal (francesco malpartida): 
+ - LiquidCrystalNew (this library)     : <b>484us</b>
+ - LiquidTWI2                          : 475us
+ +++ FTime
+ - LiquidCrystal (classic)             :
+ - LiquidCrystal (francesco malpartida): 
+ - LiquidCrystalNew (this library)     : <b>16,47ms</b>
+ - LiquidTWI2                          : 20,18
+
+As you see this library outperforms any others apart TWI that still need some work. The main problem of TWI is
+that cannot use very fast or exotic solutions since can break other TWI devices connected on same bus.
 
 some words about <b>HAEN</b> ----------------------------------------------------------------------------------
 
