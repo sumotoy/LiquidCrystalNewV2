@@ -4,7 +4,19 @@
 #include <inttypes.h>
 
 #include "HD44780.h"
+#include "_utility/cpuident.h"				// identify the MCU used
+// #include "pins_arduino.h"
+// #include "wiring_private.h"
 
+/*
+	This is the direct connect methods exact as the canonical liquidLibrary from arduino.
+	Main differences is that it can run only in 4bit mode but can drive 2 x HD44780 LCD's
+	and uses faster digitalWrite routine so it's faster! It also have some fix that allow
+	correct handle of big screens and better cursor management.
+*/
+//#define nop asm volatile ("nop\n\t")
+//#define NANOD asm volatile ("nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t")
+//#define NANOD __asm__("nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t"); //500nS
 
 class LiquidCrystalNew : public HD44780
 {
@@ -23,6 +35,7 @@ private:
 	void 			write4bits(byte value);
 	void 			setDataMode(byte mode);
 	void 			pulseEnable(byte enPin);
+
 };
 
 #endif

@@ -47,7 +47,7 @@ void HD44780::noDisplay() {
 
 void HD44780::display() {
 	_displaycontrol |= LCD_DISPLAYON;
-	commandBoth(LCD_DISPLAYCONTROL | _displaycontrol & LCD_CURSORS_MASK);   //both chips on, both cursors off
+	commandBoth(LCD_DISPLAYCONTROL | (_displaycontrol & LCD_CURSORS_MASK));   //both chips on, both cursors off
 	command(LCD_DISPLAYCONTROL | _displaycontrol);              //selected chip gets cursor on
 }
 
@@ -131,7 +131,7 @@ void HD44780::setCursor(byte col, byte row) { // this can be called by the user 
 	if (offset < 0) offset += 40;
 	offset |= high_bit;
 	if (_chip != (row & 0b10)) 	{
-		command(LCD_DISPLAYCONTROL | _displaycontrol & LCD_CURSORS_MASK);  //turn off cursors on chip we are leaving
+		command(LCD_DISPLAYCONTROL | (_displaycontrol & LCD_CURSORS_MASK));  //turn off cursors on chip we are leaving
 		_chip = row & 0b10;																//if it is row 0 or 1 this is 0; if it is row 2 or 3 this is 2
 		command(LCD_DISPLAYCONTROL | _displaycontrol);									//turn on cursor on chip we moved to
 	}

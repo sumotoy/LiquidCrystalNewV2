@@ -9,7 +9,9 @@
 
 
 #include "LiquidCrystalNew.h"
-
+#if defined(__FASTSWRITE2__)	
+#include "_utility/DigitalIO/DigitalPin.h"
+#endif
 //2 chip
 LiquidCrystalNew::LiquidCrystalNew(const byte rs,const byte en1,const byte en2,const byte d0,const byte d1,const byte d2,const byte d3,const byte bk){
 	init(rs,en1,en2,d0,d1,d2,d3,bk);
@@ -59,25 +61,57 @@ void LiquidCrystalNew::init(const byte rs,const byte en1,const byte en2,const by
 	_row_offsets[3] = 0x54; // 84 - (83+nColumns) for line 3  -- so 80 characters tops out at #103 !
 }
 
+	
 void LiquidCrystalNew::begin(byte cols, byte lines, uint8_t dotsize) {
-	uint8_t i;
-	for (i=0;i<4;i++){
-		pinMode(_data_pins[i],OUTPUT);
-	}
-	pinMode(_rs_pin,OUTPUT);
-	pinMode(_en1,OUTPUT);
-	digitalWrite(_en1, LOW);
+	
+	#if defined(__FASTSWRITE2__)	
+		fastPinMode(_data_pins[0], OUTPUT);
+		fastPinMode(_data_pins[1], OUTPUT);
+		fastPinMode(_data_pins[2], OUTPUT);
+		fastPinMode(_data_pins[3], OUTPUT);
+		fastPinMode(_data_pins[0], OUTPUT);
+		fastPinMode(_en1, OUTPUT);
+		fastPinMode(_rs_pin, OUTPUT);
+		fastDigitalWrite(_en1, LOW);
+	#else	
+		byte i;
+		for (i=0;i<4;i++){
+			pinMode(_data_pins[i],OUTPUT);
+		}
+		pinMode(_rs_pin,OUTPUT);
+		pinMode(_en1,OUTPUT);
+		digitalWrite(_en1, LOW);
+	#endif
+	
 	if (_multipleChip) {
-		pinMode(_en2,OUTPUT);  //4X40 LCD
-		digitalWrite(_en2, LOW);
+		#if defined(__FASTSWRITE2__)
+			fastPinMode(_en2, OUTPUT);	
+			fastDigitalWrite(_en2, LOW);			
+		#else
+			pinMode(_en2,OUTPUT);  //4X40 LCD
+			digitalWrite(_en2, LOW);
+		#endif
 	}
+	
 	if (_backlightPin != 255){
-		pinMode(_backlightPin,OUTPUT);
-		digitalWrite(_backlightPin,_backLight);
+		#if defined(__FASTSWRITE3__)	
+			fastPinMode(_backlightPin, OUTPUT);
+			fastDigitalWrite(_backlightPin, _backLight);
+		#else
+			pinMode(_backlightPin,OUTPUT);
+			digitalWrite(_backlightPin,_backLight);
+		#endif
 	}
-	for (i=0;i<4;i++){
-		digitalWrite(_data_pins[i],LOW);
-	}
+	#if defined(__FASTSWRITE2__)
+		fastDigitalWrite(_data_pins[0], LOW);
+		fastDigitalWrite(_data_pins[1], LOW);
+		fastDigitalWrite(_data_pins[2], LOW);
+		fastDigitalWrite(_data_pins[3], LOW);
+	#else
+		for (i=0;i<4;i++){
+			digitalWrite(_data_pins[i],LOW);
+		}
+	#endif
 	_numcols = cols;    //there is an implied lack of trust; the private version can't be munged up by the user.
 	_numlines = lines;
 	_row_offsets[2] = cols + _row_offsets[0];  //should autoadjust for 16/20 or whatever columns now
@@ -132,13 +166,27 @@ void LiquidCrystalNew::initChip(uint8_t dotsize, byte enPin) {
 void LiquidCrystalNew::send(uint8_t value, byte mode) {
 	byte en = _en1;
 	if (_multipleChip && _chip) en = _en2;
-	delayMicroseconds(DELAYPERCHAR);
-	setDataMode(mode);					
-	#if defined(__FASTSPI)		
+	//delayMicroseconds(DELAYPERCHAR);
+	nop;
+	setDataMode(mode);	
+	#if defined(__FASTSWRITE2__)
+		fastDigitalWrite(_data_pins[0],value & 0x10);
+		fastDigitalWrite(_data_pins[1],value & 0x20);
+		fastDigitalWrite(_data_pins[2],value & 0x40);
+		fastDigitalWrite(_data_pins[3],value & 0x80);
+		
+		pulseEnable(en);
+		
+		fastDigitalWrite(_data_pins[0],value & 0x01);
+		fastDigitalWrite(_data_pins[1],value & 0x02);
+		fastDigitalWrite(_data_pins[2],value & 0x04);
+		fastDigitalWrite(_data_pins[3],value & 0x08);
+	#elif defined(__FASTSWRITE__)	
 		digitalWriteFast(_data_pins[0],value & 0x10);
 		digitalWriteFast(_data_pins[1],value & 0x20);
 		digitalWriteFast(_data_pins[2],value & 0x40);
 		digitalWriteFast(_data_pins[3],value & 0x80);
+		
 		pulseEnable(en);
 		
 		digitalWriteFast(_data_pins[0],value & 0x01);
@@ -152,6 +200,7 @@ void LiquidCrystalNew::send(uint8_t value, byte mode) {
 		digitalWrite(_data_pins[3],value & 0x80);
 
 		pulseEnable(en);
+		
 		digitalWrite(_data_pins[0],value & 0x01);
 		digitalWrite(_data_pins[1],value & 0x02);
 		digitalWrite(_data_pins[2],value & 0x04);
@@ -161,43 +210,60 @@ void LiquidCrystalNew::send(uint8_t value, byte mode) {
 	}
 
 void LiquidCrystalNew::write4bits(byte value) {  //still used during init
+    
 	register byte v = value;
+
 	byte *pinptr = _data_pins;
+
 	byte en = _en1;
  // 4x40 LCD with 2 controller chips with separate enable lines if we called w 2 enable pins and are on lines 2 or 3 enable chip 2  
-	if (_multipleChip && _chip) en = _en2;   
-#if defined(__FASTSPI)
+	if (_multipleChip && _chip) en = _en2; 
+	#if defined(__FASTSWRITE2__)
+		fastDigitalWrite(*pinptr++,v & 01);
+		fastDigitalWrite(*pinptr++,(v >>= 1) & 01);
+		fastDigitalWrite(*pinptr++,(v >>= 1) & 01);
+		fastDigitalWrite(*pinptr++,(v >>= 1) & 01);
+	#elif defined(__FASTSWRITE__)	
 		digitalWriteFast(*pinptr++,v & 01);
 		digitalWriteFast(*pinptr++,(v >>= 1) & 01);
 		digitalWriteFast(*pinptr++,(v >>= 1) & 01);
 		digitalWriteFast(*pinptr++,(v >>= 1) & 01);
-#else
+	#else
 		digitalWrite(*pinptr++,v & 01);
 		digitalWrite(*pinptr++,(v >>= 1) & 01);
 		digitalWrite(*pinptr++,(v >>= 1) & 01);
 		digitalWrite(*pinptr++,(v >>= 1) & 01);
-#endif
+	#endif	
 	pulseEnable(en);
 } 
 
 
 //Set data mode, want send data or command?  0:COMMAND -- 1:DATA
 void LiquidCrystalNew::setDataMode(byte mode) {
-#if defined(__FASTSPI)
-	digitalWriteFast(_rs_pin,mode);
-#else
-	digitalWrite(_rs_pin,mode);
-#endif
+	#if defined(__FASTSWRITE2__)
+		fastDigitalWrite(_rs_pin,mode);
+	#elif defined (__FASTSWRITE__)
+		digitalWriteFast(_rs_pin,mode);
+	#else
+		digitalWrite(_rs_pin,mode);
+	#endif
 }
 
 void LiquidCrystalNew::pulseEnable(byte enPin) {
-#if defined(__FASTSPI)
-	digitalWriteFast(enPin,HIGH);   // enable pulse must be >450ns
-	digitalWriteFast(enPin,LOW);
-#else
-	digitalWrite(enPin,HIGH);   // enable pulse must be >450ns
-	digitalWrite(enPin,LOW);
-#endif
+	#if defined(__FASTSWRITE2__)
+		fastDigitalWrite(enPin,HIGH);   // enable pulse must be >450ns
+		// enable pulse must be >450ns (TODO!!!!!!!!!!!!)
+		NANOD;
+		fastDigitalWrite(enPin,LOW);
+	#elif defined (__FASTSWRITE__)
+		digitalWriteFast(enPin,HIGH);   // enable pulse must be >450ns
+		// enable pulse must be >450ns (TODO!!!!!!!!!!!!)
+		NANOD;
+		digitalWriteFast(enPin,LOW);
+	#else
+		digitalWrite(enPin,HIGH);   // enable pulse must be >450ns
+		digitalWrite(enPin,LOW);
+	#endif
 }
 
 
@@ -209,10 +275,12 @@ void LiquidCrystalNew::backlight(byte val){
 	_backLight = val;
 #endif
 	if (_backlightPin != 255){
-#if defined(__FASTSPI)
-		digitalWriteFast(_backlightPin,_backLight);   // enable pulse must be >450ns
-#else
-		digitalWrite(_backlightPin,_backLight);   // enable pulse must be >450ns
-#endif
+	#if defined(__FASTSWRITE2__)
+		fastDigitalWrite(_backlightPin,_backLight);  
+	#elif defined(__FASTSWRITE__)
+		digitalWriteFast(_backlightPin,_backLight);   
+	#else
+		digitalWrite(_backlightPin,_backLight);   
+	#endif
 	}
 }
