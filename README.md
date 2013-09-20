@@ -32,6 +32,7 @@ Goals:
 
 
 Description of the INSTANCES:---------------------------------------------------------------------------------
+
 [<b>LiquidCrystalNew</b>]
 
 This is the basic and classic configuration where you connect your LCD directly to MCU without using any helper GPIO chip.
