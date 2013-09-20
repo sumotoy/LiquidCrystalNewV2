@@ -2,7 +2,6 @@
 	Classic LCD speed test modified to work with most MCU!!!
 */
 
-
 #define iLCD		// turn on code to calculate speed of "independent" sized display
 
 #define LCD_COLS 20
@@ -21,13 +20,10 @@
 
 #define DELAY_TIME 3500 // delay time to see information on lcd
 
-#include <LiquidCrystalNew_SSPI.h>   // import library
-/*
-	parameters ------------------------------------------------------
-	cs_pin,data_pin,clock_pin,use 2xHD44780 chip(1) or not (0), HAEN address (set as 0 or 255 to avoid HAEN)
-*/
-LiquidCrystalNew_SSPI lcd(10,11,13,0,0x20);	// create the instance
+#include <SPI.h>
+#include <LiquidCrystalNew_SSPI.h>
 
+LiquidCrystalNew_SSPI lcd(11,13,10,0,0x20);
 
 #ifdef __AVR__
 extern unsigned int __bss_end;
@@ -61,7 +57,6 @@ void setup()
   lcd.clear();
 #endif
 }
-
 void loop()
 {
   unsigned long etime;

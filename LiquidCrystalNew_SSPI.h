@@ -36,7 +36,6 @@ private:
 	void				writeByte(byte cmd,byte value);
 	inline void 		altSPIwrite(uint8_t c);
 	#if defined(__FASTSWRITE2__)
-	
     volatile uint8_t *mosiport, *clkport, *csport;
     uint8_t mosipinmask, clkpinmask, cspinmask;
 	#endif
