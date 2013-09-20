@@ -109,14 +109,19 @@ Speed tests where maded with the same MCU (arduino UNO/16Mhz), same sketch and a
   Direct Connection Test
 
  +++ FPS TEST
+ 
  - LiquidCrystal (classic)             :
  - LiquidCrystal (francesco malpartida): 287,85fps
  - LiquidCrystalNew (this library)     : <b>383fps</b>
+ 
  +++ Byte XFer
+
  - LiquidCrystal (classic)             :
  - LiquidCrystal (francesco malpartida): 62us
  - LiquidCrystalNew (this library)     : <b>83us</b>
+ 
  +++ FTime
+
  - LiquidCrystal (classic)             :
  - LiquidCrystal (francesco malpartida): 3,47ms
  - LiquidCrystalNew (this library)     : <b>2,61ms</b>
@@ -125,14 +130,19 @@ Speed tests where maded with the same MCU (arduino UNO/16Mhz), same sketch and a
   Francesco Malpartida has not SPI support so I wrote a small addon.
 
  +++ FPS TEST
+ 
  - LiquidCrystal (classic)             :
  - LiquidCrystal (francesco malpartida): 167,3fps
  - LiquidCrystalNew (this library)     : <b>352fps</b>
+ 
  +++ Byte XFer
+
  - LiquidCrystal (classic)             :
  - LiquidCrystal (francesco malpartida): 68us
  - LiquidCrystalNew (this library)     : <b>83us</b>
+ 
  +++ FTime
+
  - LiquidCrystal (classic)             :
  - LiquidCrystal (francesco malpartida): 5,98ms
  - LiquidCrystalNew (this library)     : <b>2,84ms</b>
@@ -141,16 +151,21 @@ Speed tests where maded with the same MCU (arduino UNO/16Mhz), same sketch and a
   TWI GPIO chip helper test
 
  +++ FPS TEST
+ 
  - LiquidCrystal (classic)             :
  - LiquidCrystal (francesco malpartida): 
  - LiquidCrystalNew (this library)     : <b>48,57fps</b>
  - LiquidTWI2                          : 49,57
+ 
  +++ Byte XFer
+
  - LiquidCrystal (classic)             :
  - LiquidCrystal (francesco malpartida): 
  - LiquidCrystalNew (this library)     : <b>484us</b>
  - LiquidTWI2                          : 475us
+ - 
  +++ FTime
+
  - LiquidCrystal (classic)             :
  - LiquidCrystal (francesco malpartida): 
  - LiquidCrystalNew (this library)     : <b>16,47ms</b>
