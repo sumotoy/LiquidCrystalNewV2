@@ -21,7 +21,8 @@ GPIO connections to display can be easily modified by change the file utility/sp
 Goals:
 
  - F A S T ! ! !
- - compatible with standard LiquidCrystal (apart the bads, sorry Tom!),
+ - compatible with standard LiquidCrystal (apart the bads, sorry Tom!).
+ - compatiple with most MCU's.
  - small memory impact.
  - compact and small code.
  - can drive large 2xHD44780 chip displays.
@@ -44,7 +45,7 @@ DigitalPin library that works with many MCU's. I added support for Teensy3 to ge
 
 This uses 3 wires SPI to drive an MCP23s08 connected to the LCD display as 4 bit. It uses HAEN so the 3 wires can be
 shared with other 7 additional MCP23Sxx chips.
-It's still not optimized and all in experiment mode but actually it's the 'fastest' of all libraries I tested!
+It's still not fully optimized but actually it's the 'fastest' of all libraries I tested!
 
 
 MCP23s08/MCP23008 connections
@@ -89,6 +90,11 @@ though a dedicated file so it can be easily adapted to other existing hardware d
 
 This version uses 2 wire PCF8574 and PCF8574A chip as GPIO. GPIO pins are freely configurable
 though a dedicated file so it can be easily adapted to other existing hardware design.
+
+[<b>LiquidCrystal_SHR</b>]
+
+This version uses 3 wire shift register chip 74XX595 as GPIO. GPIO pins are freely configurable
+though a dedicated file so it can be easily adapted to other existing hardware design.
         
 
 
@@ -102,12 +108,13 @@ Last Changes:-------------------------------------------------------------------
 Not Tested yet:-----------------------------------------------------------------------------------------------
 
  - LiquidCrystal_SSPI
+ - LiquidCrystal_SHR still not working (next release will...)
 
-Speed Test and comparison with other libraries:---------------------------------------------------------------
+<b>Speed Test and comparison with other libraries:</b>---------------------------------------------------------------
 
 Speed tests where maded with the same MCU (arduino UNO/16Mhz), same sketch and an LCD of 2x20.
 
-= Direct Connection Test ===========================================
+= <b>Direct Connection Test</b> ===========================================
 
  +++ FPS TEST +++++++++++++++++++++++++++++++++++++++++++++++++++++
  
@@ -127,7 +134,7 @@ Speed tests where maded with the same MCU (arduino UNO/16Mhz), same sketch and a
  - LiquidCrystal (francesco malpartida): 3,47ms
  - LiquidCrystalNew (this library)     : <b>2,61ms</b> best result
 
-= SPI GPIO chip helper test ========================================
+= <b>SPI GPIO chip helper test</b> ========================================
   Francesco Malpartida has not SPI support so I wrote a small addon.
 
  +++ FPS TEST ++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -149,7 +156,7 @@ Speed tests where maded with the same MCU (arduino UNO/16Mhz), same sketch and a
  - LiquidCrystalNew (this library)     : <b>2,84ms</b> best result
 
  
-= TWI GPIO chip helper test ==========================================
+= <b>TWI GPIO chip helper test</b> ==========================================
 
  +++ FPS TEST ++++++++++++++++++++++++++++++++++++++++++++++++++++
  
