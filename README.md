@@ -135,7 +135,8 @@ Speed tests where maded with the same MCU (arduino UNO/16Mhz), same sketch and a
  - LiquidCrystalNew (this library)     : <b>2,61ms</b> best result
 
 = <b>SPI GPIO chip helper test</b> ========================================
-  Francesco Malpartida has not SPI support so I wrote a small addon.
+
+  Francesco Malpartida library has not SPI support so I wrote a small addon.
 
  +++ FPS TEST ++++++++++++++++++++++++++++++++++++++++++++++++++++
  
