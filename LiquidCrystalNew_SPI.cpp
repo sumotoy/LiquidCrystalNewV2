@@ -160,7 +160,7 @@ void LiquidCrystalNew_SPI::send(uint8_t value, byte mode) {
 	byte en = _en1;
 	if (_multipleChip && _chip) en = _en2;
 	#if defined(__FASTSWRITE2__)
-	nop;nop;nop;
+	nop;nop;nop;nop;nop;nop;
 	#endif
 	_setDataMode(mode);					// I2C & SPI
   		bitWrite(_theData,LCDPIN_D4,value & 0x10);
@@ -197,9 +197,9 @@ void LiquidCrystalNew_SPI::_setDataMode(byte mode) {
 
 void LiquidCrystalNew_SPI::pulseEnable(byte witchEnablePin) {
 	writeGpio(_theData | witchEnablePin);   // En HIGH
-	NANOD;
+	NANOD;NANOD;
 	writeGpio(_theData & ~witchEnablePin);  // En LOW
-	NANOD;
+	NANOD;NANOD;
 }
 
 
@@ -233,15 +233,16 @@ void LiquidCrystalNew_SPI::writeByte(byte cmd,byte value){
 	digitalWrite(_cs, LOW);
 #endif
 
-#if defined(__FASTSWRITE2__)
+/* #if defined(__FASTSWRITE2__)
+	//ouch! too fast!
 	sendSPI(_adrs << 1);
 	sendSPI(cmd);
 	sendSPI(value); 
-#else
+#else */
 	SPI.transfer(_adrs << 1);
 	SPI.transfer(cmd);
 	SPI.transfer(value);
-#endif
+/* #endif */
 
 	// now closing communication...
 #if defined(__FASTSWRITE2__)
