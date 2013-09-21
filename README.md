@@ -1,6 +1,6 @@
 LiquidCrystalNew V2   
 ===================
-<div>Version <b>beta 0.81!!!</b> </div>
+<div>Version <b>beta 0.83</b> </div>. Finally a beta stage!
 
 An optimized version of my old library LiquidCrystalNew.
 Purpose to this library is drive any HD44780 drived (or compatible) LCD easily, LiquidCrystal compatible commands
@@ -88,7 +88,7 @@ LCD's R/W to ground
         
 [<b>LiquidCrystal_TWI</b>]
 
-This version uses 2 wire MCP23008 chip as GPIO and it's directly compatible with ladyada LCD piggyback. GPIO pins are freely configurable
+This version uses 2 wire MCP23008,PCF8574 & PCF8574A chip as GPIO and it's directly compatible with ladyada LCD piggyback. GPIO pins are freely configurable
 though a dedicated file so it can be easily adapted to other existing hardware design.
 
 <b>MCP23008</b> connections
@@ -104,14 +104,8 @@ though a dedicated file so it can be easily adapted to other existing hardware d
                      [|     |] <- E
                      [|     |] <- RS
         gnd       -> [|_____|] <- EN2 (if needed)
-
-LCD's R/W to ground
-
-[<b>LiquidCrystal_TWI2</b>]
-
-This version uses 2 wire PCF8574 and PCF8574A chip as GPIO. GPIO pins are freely configurable
-though a dedicated file so it can be easily adapted to other existing hardware design.
-
+        
+        
 <b>PCF8574/PCF8574A</b> connections
  
          adrs* A0 -> [|--U--|] <+ +5v
@@ -122,7 +116,7 @@ though a dedicated file so it can be easily adapted to other existing hardware d
                EN -> [|     |] <- D7
                D4 -> [|     |] <- D6
               gnd -> [|_____|] <- D5
-              
+
 LCD's R/W to ground
 
 
@@ -151,7 +145,8 @@ Last Changes:-------------------------------------------------------------------
  - SoftwareSPI version working (v a01)
  - Increased speed (v a02)
  - First beta version with major changes and speed improvements (v b0.8)
- - Fixed Software SPI (slow method) (v b0.81) <----
+ - Fixed Software SPI (slow method) (v b0.81)
+ - TWI handle more chips, some fix. (v b0.83) <----
 
 Not Tested yet:-----------------------------------------------------------------------------------------------
 
