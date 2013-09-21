@@ -3,10 +3,10 @@
 */
 
 #include <Wire.h>					// necessary if using LiquidCrystalNew_TWI
-#include <LiquidCrystalNew_TWI2.h>   // import library
+#include <LiquidCrystalNew_TWI.h>   // import library
 
 //I2C address, uses 2x44780 chip (set as 1) or standard 1 chip (set as 0)
-LiquidCrystalNew_TWI2 lcd(0x20,0);	// create the instance
+LiquidCrystalNew_TWI lcd(0x20,0,PCF8574);	// create the instance
 
 /*
 	From this point all instance methods are same and all compatible with 

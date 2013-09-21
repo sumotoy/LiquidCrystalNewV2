@@ -4,10 +4,10 @@
 */
 
 #include <Wire.h>
-#include <LiquidCrystalNew_TWI2.h>
+#include <LiquidCrystalNew_TWI.h>
 
 //I2C address, uses 2x44780 chip (set as 1) or standard 1 chip (set as 0)
-LiquidCrystalNew_TWI2 lcd(0x20,0);
+LiquidCrystalNew_TWI lcd(0x20,0,PCF8574);
 
 
 #define NUM_BENCHMARKS 4

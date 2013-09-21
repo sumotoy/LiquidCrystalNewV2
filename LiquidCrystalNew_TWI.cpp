@@ -10,7 +10,7 @@
 #include "LiquidCrystalNew_TWI.h"
 
 //1/2 chip with software SPI GPIO (3 wire)
-LiquidCrystalNew_TWI::LiquidCrystalNew_TWI(const byte adrs,const byte chip){
+LiquidCrystalNew_TWI::LiquidCrystalNew_TWI(const byte adrs,const byte chip,const byte chipType){
 	if (chip == 0 || chip == 255){
 		_en2 = 255;
 		_multipleChip = 0;
@@ -18,9 +18,10 @@ LiquidCrystalNew_TWI::LiquidCrystalNew_TWI(const byte adrs,const byte chip){
 		_en2 = (1 << LCDPIN_EN2);
 		_multipleChip = 1;
 	}
-	//init(adrs,e2);
 	_en1 = (1 << LCDPIN_EN);
 	_adrs = adrs;
+	_chipType = chipType;
+	if ((chipType == PCF8574A) && (adrs < 0x38)) _adrs = 0x38;
 	_scroll_count = 0;      //to fix the bug if we scroll and then setCursor w/o home() or clear()
 	_x = 0;
 	_y = 0;
@@ -44,7 +45,7 @@ LiquidCrystalNew_TWI::LiquidCrystalNew_TWI(const byte adrs,const byte chip){
 
 
 void LiquidCrystalNew_TWI::begin(byte cols, byte lines, uint8_t dotsize) {
-	_twiobj.initialize(_adrs);
+	_twiobj.initialize(_adrs,_chipType);
 
 
 	_numcols = cols;    //there is an implied lack of trust; the private version can't be munged up by the user.

@@ -5,8 +5,8 @@
 #include <Wire.h>					// necessary if using LiquidCrystalNew_TWI
 #include <LiquidCrystalNew_TWI.h>   // import library
 
-//I2C address, uses 2x44780 chip (set as 1) or standard 1 chip (set as 0)
-LiquidCrystalNew_TWI lcd(0x20,0);	// create the instance
+//I2C address, uses 2x44780 chip (set as 1) or standard (set as 0),GPIO chip type (MCP23008,PCF8574,PCF8574A)
+LiquidCrystalNew_TWI lcd(0x20,0,MCP23008);	// create the instance
 
 /*
 	From this point all instance methods are same and all compatible with 

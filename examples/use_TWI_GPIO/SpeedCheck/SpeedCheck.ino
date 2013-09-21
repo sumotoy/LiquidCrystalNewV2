@@ -23,7 +23,7 @@
 #include <Wire.h>
 #include <LiquidCrystalNew_TWI.h>
 
-LiquidCrystalNew_TWI lcd(0x20,0);
+LiquidCrystalNew_TWI lcd(0x20,0,MCP23008);
 
 #ifdef __AVR__
 extern unsigned int __bss_end;

@@ -20,7 +20,6 @@
 
 #define DELAY_TIME 3500 // delay time to see information on lcd
 
-#include <SPI.h>
 #include <LiquidCrystalNew_SSPI.h>
 
 LiquidCrystalNew_SSPI lcd(11,13,10,0,0x20);
@@ -49,6 +48,7 @@ static int freeMemory(void)
 
 void setup()
 {
+  //Serial.begin(38400);
   lcd.begin(LCD_COLS, LCD_ROWS);
 #ifdef __AVR__
   lcd.print("Free mem: ");

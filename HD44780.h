@@ -13,6 +13,7 @@
 #include "_utility/cpuident.h"				// identify the MCU used
 #include "_configurations/lcd_config.h"		// lcd controller constants
 /*
+Created by Max MC Costa for sumotoy,(sumotoy@gmail.com)
 	This is the main library that holds all HD44780 methods common to all other child libraries
 	that uses specific hardware
 */
@@ -80,5 +81,6 @@ private:
 #else
 	virtual void send(uint8_t value, byte mode) = 0;
 #endif
+	void inline		delayForHome() {delayMicroseconds(LCD_HOME_DLY);}
 };
 #endif

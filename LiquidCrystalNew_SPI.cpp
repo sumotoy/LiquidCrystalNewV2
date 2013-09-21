@@ -7,11 +7,10 @@
 	#include <Arduino.h>
 #endif
 
-//#include "___SPI_IO.h"
 #include "LiquidCrystalNew_SPI.h"
 
 //1/2 chip with software SPI GPIO (3 wire)
-LiquidCrystalNew_SPI::LiquidCrystalNew_SPI(const byte cs,const byte chip,const byte adrs){
+LiquidCrystalNew_SPI::LiquidCrystalNew_SPI(const byte cs,const byte chip,const byte adrs,const byte avoidSPIinit){
 
 	if (chip == 0 || chip == 255){
 		_en2 = 255;
@@ -20,6 +19,7 @@ LiquidCrystalNew_SPI::LiquidCrystalNew_SPI(const byte cs,const byte chip,const b
 		_en2 = (1 << LCDPIN_EN2);
 		_multipleChip = 1;
 	}
+	_avoidInit = avoidSPIinit;
 	_cs = cs;
 	_en1 = (1 << LCDPIN_EN);
 	_adrs = adrs;
@@ -45,7 +45,7 @@ LiquidCrystalNew_SPI::LiquidCrystalNew_SPI(const byte cs,const byte chip,const b
 
 
 void LiquidCrystalNew_SPI::begin(byte cols, byte lines, uint8_t dotsize) {
-	_spiobj.initialize(_adrs,_cs);
+	_spiobj.initialize(_adrs,_cs,_avoidInit);
 	_numcols = cols;    //there is an implied lack of trust; the private version can't be munged up by the user.
 	_numlines = lines;
 	_row_offsets[2] = cols + _row_offsets[0];  //should auto-adjust for 16/20 or whatever columns now
@@ -74,9 +74,9 @@ void LiquidCrystalNew_SPI::initChip(uint8_t dotsize, byte witchEnablePin) {
 	}
 	// Now we pull both RS and R/W low to begin commands
 	//digitalWrite(_rs_pin, LOW);
-	setDataMode(0);//COMMAND MODE
+	_setDataMode(0);//COMMAND MODE
 	//digitalWrite(witchEnablePin, LOW);
-	writeGpio(_theData & ~witchEnablePin);  // En LOW---------------------------------------*/
+	//writeGpio(_theData & ~witchEnablePin);  // En LOW---------------------------------------*/
 	write4bits(0x03);
 	delayMicroseconds(5000); // I have one LCD for which 4500 here was not long enough.
 	// second try
@@ -102,24 +102,25 @@ void LiquidCrystalNew_SPI::initChip(uint8_t dotsize, byte witchEnablePin) {
 	//writeGpio(_theData | witchEnablePin);   // En HIGH ---------------------------------
 }
 
+
 // write either command or data, with automatic 4/8-bit selection
 void LiquidCrystalNew_SPI::send(uint8_t value, byte mode) {
 	byte en = _en1;
 	if (_multipleChip && _chip) en = _en2;
-	#if defined(__FASTSWRITE2__) || defined(__FASTSWRITE__)
-	nop;
+	#if defined(__FASTSWRITE2__)
+	nop;nop;nop;
 	#endif
-	setDataMode(mode);					// I2C & SPI
-		bitWrite(_theData,LCDPIN_D4,value & 0x10);
+	_setDataMode(mode);					// I2C & SPI
+  		bitWrite(_theData,LCDPIN_D4,value & 0x10);
 		bitWrite(_theData,LCDPIN_D5,value & 0x20);
 		bitWrite(_theData,LCDPIN_D6,value & 0x40);
 		bitWrite(_theData,LCDPIN_D7,value & 0x80);
-		pulseEnable(en);
+ 		pulseEnable(en); 
 		bitWrite(_theData,LCDPIN_D4,value & 0x01);
 		bitWrite(_theData,LCDPIN_D5,value & 0x02);
 		bitWrite(_theData,LCDPIN_D6,value & 0x04);
-		bitWrite(_theData,LCDPIN_D7,value & 0x08);
-
+		bitWrite(_theData,LCDPIN_D7,value & 0x08); 
+ 
 		bitWrite(_theData,LCDPIN_LD,_backLight);//Background led
 	pulseEnable(en);
 	}
@@ -138,7 +139,7 @@ void LiquidCrystalNew_SPI::write4bits(byte value) {  //still used during init
 
 
 //Set data mode, want send data or command?  0:COMMAND -- 1:DATA
-void LiquidCrystalNew_SPI::setDataMode(byte mode) {
+void LiquidCrystalNew_SPI::_setDataMode(byte mode) {
 	bitWrite(_theData,LCDPIN_RS,mode);
 }
 

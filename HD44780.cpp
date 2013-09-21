@@ -7,12 +7,25 @@
 #else
 	#include <Arduino.h>
 #endif
-#include "HD44780.h"
 
+#include "HD44780.h"
 
 HD44780::HD44780 () 
 {
- 
+	_en1 = 0;
+	_en2 = 255;
+	_chip = 0;
+	_multipleChip = 0;
+	_scroll_count = 0;
+	_x = 0;
+	_y = 0;
+	_numcols = 0;
+	_numlines = 0;
+	_setCursFlag = 0;
+	_direction = 0;
+	_displaycontrol = 0;
+	_displaymode = 0;
+	_backLight = 0;
 }
 
 
@@ -22,11 +35,11 @@ void HD44780::clear(){
 		command(LCD_CLEARDISPLAY); 
 		_chip = 0;
 		command(LCD_CLEARDISPLAY);
-		delayMicroseconds(LCD_HOME_DLY);
+		delayForHome();
 		setCursor(0,0);
 	} else {
 		command(LCD_CLEARDISPLAY);  // clear display, set cursor position to zero
-		delayMicroseconds(LCD_HOME_DLY);
+		delayForHome();
 	}
 	_scroll_count = 0;
 }
@@ -34,8 +47,7 @@ void HD44780::clear(){
 
 void HD44780::home(){
 	commandBoth(LCD_RETURNHOME);  // set cursor position to zero      //both chips.
-	//delayPerHome();
-	delayMicroseconds(LCD_HOME_DLY);
+	delayForHome();
 	_scroll_count = 0;
 	if (_multipleChip) setCursor(0,0); 
 }
@@ -135,7 +147,7 @@ void HD44780::setCursor(byte col, byte row) { // this can be called by the user 
 		_chip = row & 0b10;																//if it is row 0 or 1 this is 0; if it is row 2 or 3 this is 2
 		command(LCD_DISPLAYCONTROL | _displaycontrol);									//turn on cursor on chip we moved to
 	}
-	command(LCD_SETDDRAMADDR | (byte)offset );
+	command(LCD_SETDDRAMADDR | (byte)offset);
 }
 
 void HD44780::createChar(uint8_t location, uint8_t charmap[]) {
@@ -145,7 +157,6 @@ void HD44780::createChar(uint8_t location, uint8_t charmap[]) {
 		command(LCD_SETCGRAMADDR | (location << 3));
 		delayMicroseconds(30);
 		for (i=0; i<8; i++) {
-			//write(charmap[i]);      // call the virtual write method
 			send(charmap[i],HIGH);
 			delayMicroseconds(40);
 		}
@@ -156,7 +167,6 @@ void HD44780::createChar(uint8_t location, uint8_t charmap[]) {
 			command(LCD_SETCGRAMADDR | (location << 3));
 			delayMicroseconds(30);
 			for (i=0; i<8; i++) {
-				//write(charmap[i]);      // call the virtual write method
 				send(charmap[i],HIGH);
 				delayMicroseconds(40);
 			}
@@ -173,7 +183,6 @@ size_t HD44780::write(uint8_t value) {
 #endif
 	if ((_scroll_count != 0) || (_setCursFlag != 0)) setCursor(_x,_y);   //first we call setCursor and send the character
 	if ((value != '\r') && (value != '\n')) send(value,HIGH);
-	
 	_setCursFlag = 0;
 	if (_direction == LCD_Right) {                    // then we update the x & y location for the NEXT character
 		_x++;

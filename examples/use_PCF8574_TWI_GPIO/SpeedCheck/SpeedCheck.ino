@@ -25,7 +25,7 @@
 #include <LiquidCrystalNew_TWI.h>
 
 
-LiquidCrystalNew_TWI lcd(0x38,0);
+LiquidCrystalNew_TWI lcd(0x38,0,PCF8574A);
 
 
 #ifdef __AVR__

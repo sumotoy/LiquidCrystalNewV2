@@ -8,7 +8,6 @@
 
 LiquidCrystalNew	KEYWORD1
 LiquidCrystalNew_TWI	KEYWORD1
-LiquidCrystalNew_TWI2	KEYWORD1
 LiquidCrystalNew_SPI	KEYWORD1
 LiquidCrystalNew_SSPI	KEYWORD1
 LiquidCrystalNew_SHR	KEYWORD1
@@ -43,3 +42,6 @@ backlight	KEYWORD2
 # Constants (LITERAL1)
 #######################################
 
+MCP23008	LITERAL1
+PCF8574	LITERAL1
+PCF8574A	LITERAL1

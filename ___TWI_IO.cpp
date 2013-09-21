@@ -15,19 +15,16 @@
 TWI_IO::TWI_IO(){
 }
 
-void TWI_IO::initialize(const byte adrs){
+void TWI_IO::initialize(const byte adrs,const byte chipType){
 	_adrs = adrs;
 
 	Wire.begin();
 	
 	TWBR = 12;
 	delay(100);
-/* 	if (_adrs != 0){
-		writeByte(0x05,0b00101000);//HAEN on (IOCON)
-	} else {
+	if (chipType == 0){//MCP23008
 		writeByte(0x05,0b00100000);//use dedicated cs
-	} */
-	writeByte(0x05,0b00100000);//use dedicated cs
+	}
 	writeByte(0x00,0x00);//set as out (IODIR)
 	writeByte(0x09,0b00000000);//write all low to GPIO
 }

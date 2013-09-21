@@ -9,6 +9,7 @@
 #endif
 
 #include <../SPI/SPI.h>
+
 #include "___SPI_IO.h"
 
 
@@ -21,10 +22,11 @@ SPI_IO::SPI_IO(){
 MCP23S017 initialization
 begin SPI, set HAEN if necessary, set as out, zeroing all ports
 */
-void SPI_IO::initialize(const byte adrs,const byte cs){
+void SPI_IO::initialize(const byte adrs,const byte cs,byte avoidInit){
 	_adrs = adrs;
 	_cs = cs;
 // ---- start SPI initializations HERE
+if (!avoidInit){
 	SPI.begin();
 #if defined(__TEENSY3X__)
 /*
@@ -41,14 +43,20 @@ SPI_CLOCK_DIV128  //375 Khz
     SPI.setBitOrder(MSBFIRST);
     SPI.setDataMode(SPI_MODE0);
 #elif defined(__ARDUEX__)//dunnoyet!
-    SPI.setClockDivider(SPI_CLOCK_DIV4); // 4 MHz (half speed)
+    SPI.setClockDivider(SPI_CLOCK_DIV4);
     SPI.setBitOrder(MSBFIRST);
     SPI.setDataMode(SPI_MODE0);
 #else
-    SPI.setClockDivider(SPI_CLOCK_DIV4); // 4 MHz (half speed)
-    SPI.setBitOrder(MSBFIRST);
-    SPI.setDataMode(SPI_MODE0);
+/*
+SPI_CLOCK_DIV2    //8.0 MHz ----> ???
+SPI_CLOCK_DIV4    //4.0 MHz ----> ok
+SPI_CLOCK_DIV8    
+*/
+    SPI.setClockDivider(SPI_CLOCK_DIV4); 
+    //SPI.setBitOrder(MSBFIRST);
+    //SPI.setDataMode(SPI_MODE0);
 #endif
+}
 	pinMode(_cs, OUTPUT); //set data pin modes
 #if defined(__FASTSWRITE2__)
 	csport      = portOutputRegister(digitalPinToPort(_cs));
@@ -82,11 +90,15 @@ void SPI_IO::writeByte(byte cmd,byte value){
 	digitalWrite(_cs, LOW);
 #endif
 
-	SPI.transfer(_adrs << 1);//in write, in read: SPI.transfer((addr << 1) | 1);
-	
-	//this 2 byte blocks instruct the chip
+#if defined(__FASTSWRITE2__)
+	sendSPI(_adrs << 1);
+	sendSPI(cmd);
+	sendSPI(value); 
+#else
+	SPI.transfer(_adrs << 1);
 	SPI.transfer(cmd);
 	SPI.transfer(value);
+#endif
 
 	// now closing communication...
 #if defined(__FASTSWRITE2__)
