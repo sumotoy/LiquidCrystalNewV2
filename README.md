@@ -200,21 +200,18 @@ Speed tests where maded with the same MCU (arduino UNO/16Mhz), same sketch and a
 
  +++ FPS TEST ++++++++++++++++++++++++++++++++++++++++++++++++++++
  
- - LiquidCrystal (classic)             : 
  - LiquidCrystal (francesco malpartida): 
  - LiquidCrystalNew (this library)     : <b>48,57fps</b> 
  - LiquidTWI2                          : 49,57 best result 
  
  +++ Byte XFer +++++++++++++++++++++++++++++++++++++++++++++++++++
 
- - LiquidCrystal (classic)             : 
  - LiquidCrystal (francesco malpartida):  
  - LiquidCrystalNew (this library)     : <b>484us</b> 
  - LiquidTWI2                          : 475us best result 
  - 
  +++ FTime +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
- - LiquidCrystal (classic)             : 
  - LiquidCrystal (francesco malpartida):  
  - LiquidCrystalNew (this library)     : <b>20,18ms</b> 
  - LiquidTWI2                          : 16,47ms best result 
