@@ -1,6 +1,6 @@
 LiquidCrystalNew V2   
 ===================
-<div>Version <b>beta 0.83</b> </div>. Finally a beta stage!
+<div>Version <b>beta 0.85</b> </div>. Finally a beta stage!
 
 An optimized version of my old library LiquidCrystalNew.
 Purpose to this library is drive any HD44780 drived (or compatible) LCD easily, LiquidCrystal compatible commands
@@ -146,7 +146,8 @@ Last Changes:-------------------------------------------------------------------
  - Increased speed (v a02)
  - First beta version with major changes and speed improvements (v b0.8)
  - Fixed Software SPI (slow method) (v b0.81)
- - TWI handle more chips, some fix. (v b0.83) <----
+ - TWI handle more chips, some fix. (v b0.83)
+ - Dropped hardware methods (useless!!!), various fix. (v b0.85) <----
 
 Not Tested yet:-----------------------------------------------------------------------------------------------
 
@@ -183,7 +184,7 @@ Speed tests where maded with the same MCU (arduino UNO/16Mhz), same sketch and a
  +++ FPS TEST ++++++++++++++++++++++++++++++++++++++++++++++++++++
  
  - LiquidCrystal (francesco malpartida): 167,3fps 
- - LiquidCrystalNew (this library)     : <b>355fps</b> best result 
+ - LiquidCrystalNew (this library)     : <b>351fps</b> best result 
  
  +++ Byte XFer +++++++++++++++++++++++++++++++++++++++++++++++++++
 
