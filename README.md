@@ -160,19 +160,19 @@ Speed tests where maded with the same MCU (arduino UNO/16Mhz), same sketch and a
 
  +++ FPS TEST +++++++++++++++++++++++++++++++++++++++++++++++++++++
  
- - LiquidCrystal (classic)             : 
+ - LiquidCrystal (classic)             : 72,37fps
  - LiquidCrystal (francesco malpartida): 287,85fps 
  - LiquidCrystalNew (this library)     : <b>383fps</b> best result 
  
  +++ Byte XFer ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
- - LiquidCrystal (classic)             : 
+ - LiquidCrystal (classic)             : 329us
  - LiquidCrystal (francesco malpartida): 83us 
  - LiquidCrystalNew (this library)     : <b>62us</b> best result 
  
  +++ FTime ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
- - LiquidCrystal (classic)             : 
+ - LiquidCrystal (classic)             : 13,82ms
  - LiquidCrystal (francesco malpartida): 3,47ms 
  - LiquidCrystalNew (this library)     : <b>2,61ms</b> best result 
 
@@ -182,21 +182,18 @@ Speed tests where maded with the same MCU (arduino UNO/16Mhz), same sketch and a
 
  +++ FPS TEST ++++++++++++++++++++++++++++++++++++++++++++++++++++
  
- - LiquidCrystal (classic)             : 
  - LiquidCrystal (francesco malpartida): 167,3fps 
- - LiquidCrystalNew (this library)     : <b>352fps</b> best result 
+ - LiquidCrystalNew (this library)     : <b>355fps</b> best result 
  
  +++ Byte XFer +++++++++++++++++++++++++++++++++++++++++++++++++++
 
- - LiquidCrystal (classic)             :
  - LiquidCrystal (francesco malpartida): 142us 
- - LiquidCrystalNew (this library)     : <b>68us</b> best result 
+ - LiquidCrystalNew (this library)     : <b>63us</b> best result 
  
  +++ FTime +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
- - LiquidCrystal (classic)             : 
  - LiquidCrystal (francesco malpartida): 5,98ms 
- - LiquidCrystalNew (this library)     : <b>2,84ms</b> best result 
+ - LiquidCrystalNew (this library)     : <b>2,24ms</b> best result 
 
  
 = <b>TWI GPIO chip helper test</b> ==========================================
