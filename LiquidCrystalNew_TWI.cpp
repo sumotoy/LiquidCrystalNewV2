@@ -8,6 +8,7 @@
 #endif
 
 #include "LiquidCrystalNew_TWI.h"
+#include <../Wire/Wire.h>
 
 //1/2 chip with software SPI GPIO (3 wire)
 LiquidCrystalNew_TWI::LiquidCrystalNew_TWI(const byte adrs,const byte chip,const byte chipType){
@@ -45,8 +46,16 @@ LiquidCrystalNew_TWI::LiquidCrystalNew_TWI(const byte adrs,const byte chip,const
 
 
 void LiquidCrystalNew_TWI::begin(byte cols, byte lines, uint8_t dotsize) {
-	_twiobj.initialize(_adrs,_chipType);
 
+	Wire.begin();
+	
+	TWBR = 12;
+	delay(100);
+	if (_chipType == 0){//MCP23008
+		writeByte(0x05,0b00100000);//use dedicated cs
+	}
+	writeByte(0x00,0x00);//set as out (IODIR)
+	writeByte(0x09,0b00000000);//write all low to GPIO
 
 	_numcols = cols;    //there is an implied lack of trust; the private version can't be munged up by the user.
 	_numlines = lines;
@@ -158,7 +167,7 @@ void LiquidCrystalNew_TWI::pulseEnable(byte witchEnablePin) {
 void LiquidCrystalNew_TWI::writeGpio(byte value){
       // Only write HIGH the values of the ports that have been initialised as outputs updating the output shadow of the device
 	_theData = (value & ~(0x00));
-	_twiobj.writeByte(0x09,_theData);
+	writeByte(0x09,_theData);
 }
 
 
@@ -171,8 +180,18 @@ void LiquidCrystalNew_TWI::backlight(byte val){
 	_backLight = val;
 #endif
 	bitWrite(_theData,LCDPIN_LD,_backLight);
-	_twiobj.writeByte(0x09,_theData);
+	writeByte(0x09,_theData);
 }
 
 
-
+void LiquidCrystalNew_TWI::writeByte(byte cmd,byte value){
+	Wire.beginTransmission(_adrs);
+#if ARDUINO >= 100
+	Wire.write(cmd);
+	Wire.write(value);
+#else
+	Wire.send(cmd);
+	Wire.send(value);
+#endif
+	Wire.endTransmission();
+}

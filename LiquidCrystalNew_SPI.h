@@ -3,7 +3,7 @@
 
 #include <inttypes.h>
 
-#include "___SPI_IO.h"// SPI hardware methods
+
 #include "HD44780.h"
 /*
 Created by Max MC Costa for sumotoy,(sumotoy@gmail.com)
@@ -41,10 +41,15 @@ private:
 	byte				_avoidInit;
 	void 				initChip(uint8_t dotsize, byte witchEnablePin);
 	void 				write4bits(byte value);
+	void				writeByte(byte cmd,byte value);
 	void 				_setDataMode(byte mode);
 	void 				pulseEnable(byte witchEnablePin);					//
 	void 				writeGpio(byte value);								//
-	SPI_IO   			_spiobj;											// the spi object from SPI_IO library
+	#if defined(__FASTSWRITE2__)
+	void inline			sendSPI(byte data){ SPDR = data; while(!(SPSR & _BV(SPIF))); };
+	volatile uint8_t 	*csport;
+	uint8_t 			cspinmask;
+	#endif
 };	
 
 #endif

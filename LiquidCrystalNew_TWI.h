@@ -3,7 +3,6 @@
 
 #include <inttypes.h>
 
-#include "___TWI_IO.h"					// hardware methods for TWI
 #include "HD44780.h"
 /*
 	This variation of the LiquidCrystalNew allow use the GPIO I2C expander from Microchip
@@ -20,16 +19,15 @@
 
 #include "_configurations/gpio_config_MCP23X08.h"		// GPIO pin configuration, how the GPIO is connected to LCD		
 
-typedef enum chip_type{
-    MCP23008 	= 0,
-	PCF8574 	= 1,
-    PCF8574A 	= 3
-};
+#define MCP23008 0
+#define PCF8574  1
+#define PCF8574A 2
+
 
 class LiquidCrystalNew_TWI : public HD44780
 {
 public:
-	LiquidCrystalNew_TWI(const byte adrs=0x20,const byte chip=0,const byte chip_type=MCP23008);//use twi
+	LiquidCrystalNew_TWI(const byte adrs=0x20,const byte chip = 0,const byte chip_type = MCP23008);//use twi
 	virtual void 		begin(byte cols, byte rows, uint8_t charsize = LCD_5x8DOTS); 
 	virtual void 		send(uint8_t value, byte mode);
 	virtual void 		backlight(byte value);
@@ -42,7 +40,7 @@ private:
 	void 				setDataMode(byte mode);
 	void 				pulseEnable(byte witchEnablePin);
 	void 				writeGpio(byte value);
-	TWI_IO   			_twiobj;
+	void				writeByte(byte cmd,byte value);
 };
 
 #endif
