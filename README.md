@@ -1,6 +1,7 @@
 LiquidCrystalNew V2   
 ===================
-<div>Version <b>beta 0.85</b> </div>. Finally a beta stage!
+<div>Version <b>beta 0.85</b> </div>. Finally a beta stage, but still some timing bug and 2xHD support not working as
+it should (version 1 of my library works well). DO NOT USE UNTIL 1.0 RELEASED!! STILL BUGGY!
 
 An optimized version of my old library LiquidCrystalNew.
 Purpose to this library is drive any HD44780 drived (or compatible) LCD easily, LiquidCrystal compatible commands
