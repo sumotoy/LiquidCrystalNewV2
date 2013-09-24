@@ -109,6 +109,7 @@ void HD44780::rightToLeft(void) {
 	commandBoth(LCD_ENTRYMODESET | _displaymode);    //both chips
 }
 
+
 void HD44780::autoscroll(void) {           //to count the number of times we scrolled; here we'd need to keep track of microseconds and divide. I'm not going there.
 	_displaymode |= LCD_ENTRYSHIFTINCREMENT;
 	commandBoth(LCD_ENTRYMODESET | _displaymode);   //both chips
@@ -141,7 +142,7 @@ void HD44780::setCursor(uint8_t col, uint8_t row) { // this can be called by the
 	int8_t offset = col + (_row_offsets[row] & 0x3F) + _scroll_count; //left under program control. Previously setCursor was pegged to a location in DDRAM
 	//the 3 quantities we add are each <_lcd_cols
 	if (_multipleChip){ //da testare
-		if (offset > (_lcd_cols-1)) offset -= _lcd_cols; //_lcd_cols                                    // if the display is autoscrolled this method does not work??, however.
+		if (offset > (_lcd_cols-1)) offset -= _lcd_cols; //_lcd_cols   // if the display is autoscrolled this method does not work (2 chip only) ??, however.
 		if (offset < 0) offset += _lcd_cols;
 	}	
 	offset |= high_bit;

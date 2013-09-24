@@ -7,6 +7,7 @@
 #include "HD44780.h"
 /*
 Created by Max MC Costa for sumotoy,(sumotoy@gmail.com)
+Fast DigitalIO by William Greiman
 	This variation of the LiquidCrystalNew allow use the GPIO SPI expander from Microchip
 	MCP23S08 that uses HAEN to share the same CS pin (that in SPI should normally tied to one device only)
 	with a max of 8 chip of the MCP23Sxx series.

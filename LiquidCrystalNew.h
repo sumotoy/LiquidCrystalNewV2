@@ -8,6 +8,8 @@
 
 
 /*
+Created by Max MC Costa for sumotoy,(sumotoy@gmail.com)
+Fast DigitalIO by William Greiman
 	This is the direct connect methods exact as the canonical liquidLibrary from arduino.
 	Main differences is that it can run only in 4bit mode but can drive 2 x HD44780 LCD's
 	and uses faster digitalWrite routine so it's faster! It also have some fix that allow

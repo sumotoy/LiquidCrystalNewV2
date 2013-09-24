@@ -14,6 +14,7 @@
 #include "_configurations/lcd_config.h"		// lcd controller constants
 /*
 Created by Max MC Costa for sumotoy,(sumotoy@gmail.com)
+Portions by John Rain http://code.google.com/p/liquidcrystal440/ 
 	This is the main library that holds all HD44780 methods common to all other child libraries
 	that uses specific hardware
 */
