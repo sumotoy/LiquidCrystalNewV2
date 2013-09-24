@@ -3,7 +3,7 @@ LiquidCrystalNew V2
 <div>Version <b>beta 0.9</b> </div>. Finally a beta stage, but still buggy. 
 DO NOT USE UNTIL 1.0 RELEASED (and tested)!! 
 
-First, have to thank a lot <b>William Greiman</b> and specially John Rain http://code.google.com/p/liquidcrystal440/ , they truly help me a lot to discover a lot of unseen things under code.
+First, have to thank a lot <b>William Greiman</b> and specially John Rain http://code.google.com/p/liquidcrystal440/ , they truly help me a lot to discover a lot of unseen things about coding.
 I also thanks Tom and Limor and Paul, without their help this will never come to life.
 
 An optimized version of my old library LiquidCrystalNew.
