@@ -1,6 +1,6 @@
 LiquidCrystalNew V2   
 ===================
-<div>Version <b>beta 0.9</b> </div>. Finally a beta stage, but still buggy. 
+<div>Version <b>beta 0.91</b> </div>. Finally a beta stage, but still buggy. 
 DO NOT USE UNTIL 1.0 RELEASED (and tested)!! 
 
 First, have to thank a lot <b>William Greiman</b> and specially John Rain http://code.google.com/p/liquidcrystal440/ , they truly help me a lot to discover a lot of unseen things about coding.
@@ -166,7 +166,8 @@ go back to normal. I will publish a couple of tested easy example circuits when 
  - TWI handle more chips, some fix. (v b0.83)
  - Dropped hardware methods (useless!!!), various fix. (v b0.85) <----
  - Lot of fix! 2xHD chip large display works, fixed garbage char issue, fixed scrolling, fixed strange issue
- after autoscroll, slow down a little SPI thoughput that was too fast for GPIO chips (v b0.9) <----
+ after autoscroll, slow down a little SPI thoughput that was too fast for GPIO chips (v b0.9)
+ - Beta version of shift register method. (v b0.91) <----
 
 <b>Not Tested or Working out:</b>-------------------------------------------------------------------------------------------
 
