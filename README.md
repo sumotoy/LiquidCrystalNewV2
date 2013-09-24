@@ -170,7 +170,6 @@ go back to normal. I will publish a couple of tested easy example circuits when 
 
 <b>Not Tested or Working out:</b>-------------------------------------------------------------------------------------------
 
- - LiquidCrystal_SHR dropped in beta (to avoid confusion in code) but will be present in the final release.
  - Software SPI method dropped in beta but will be present in final release.
 
 <b>Know Bugs:</b>-----------------------------------------------------------------------------------------------------
