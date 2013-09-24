@@ -1,37 +1,41 @@
 LiquidCrystalNew V2   
 ===================
-<div>Version <b>beta 0.85</b> </div>. Finally a beta stage, but still some timing bug and 2xHD support not working as
-it should (version 1 of my library works well). DO NOT USE UNTIL 1.0 RELEASED!! STILL BUGGY!
+<div>Version <b>beta 0.9</b> </div>. Finally a beta stage, but still buggy. 
+DO NOT USE UNTIL 1.0 RELEASED (and tested)!! 
+
+First, have to thank a lot <b>William Greiman</b> and specially John Rain http://code.google.com/p/liquidcrystal440/ , they truly help me a lot to discover a lot of unseen things about coding.
+I also thanks Tom and Limor and Paul, without their help this will never come to life.
 
 An optimized version of my old library LiquidCrystalNew.
-Purpose to this library is drive any HD44780 drived (or compatible) LCD easily, LiquidCrystal compatible commands
-fast and use less pin as possible. Actually this is the only library that can drive 2 HD44780 chip LCD (usually large
-40X4) lcd's.
-Respect old library this has been improved, uses much less memory and space since every method has a separate file.
-I have fixed a lot of stuff that never included in the standard LiquidCrystal as correct cursor position (now read from memory),
-corrected scrolling and after scrolling problems (like position of the cursor, etc)
+Purpose to this library is drive any HD44780 (or compatible) LCD easily but also compatible with the original liquidCrystal
+library. In addition this one let you use large displays and it's the only one that can drive 2 x HD44780 chip displays (normally large 4x40, very
+easy to find used in ebay).It's faster than original and better suited since had several bugfix and support for HD44780
+hardware memory. Library it's able to drive LCD by using several GPIO's chips (that use just 2,or 3 wires) in fast way, for example using SPI MCP23S08 you get almost the same speed of direct connected LCD!
+I know there's other libraries around but I wrote this for my needs some years ago and at the time I'm wroting this, none of them has all the features of this oneso if you need a pretty universal library for HD44780 displays that it's fast and pin saver
+you can try this one :-)
+
 This library works ONLY in <b>4 bit mode</b> since 8 bit has no apparent advantages (to me has only disadvantages) and WR has
-stuck to ground in SPI,SR,I2C versions to save GPIO pins for drive a second HD44780 if needed (even this has not
-apparently disadvantages). In addition you can get cursor row/column position and drive the backlight without use any
-additional processor pin (in GPIO's version of course). New library design let user to choose from many different method
-to save microcontroller pins, TWI (different chips), SPI (only MCP23Sxx series), Shift Register or connect directly display
+stuck to ground in SPI,SR,I2C versions to save GPIO pins for drive a second HD44780 chip if needed. In addition you can get cursor row/column position and drive the backlight without use any
+additional processor pin (using GPIO's version of course).New library design let user to choose from several different methods
+to save microcontroller pins, for example: TWI (MCP23S008,PCF8574,PCF8574A), SPI (only MCP23Sxx series), Shift Register (74xx595) or connect directly display
 without use any GPIO's.
-GPIO connections to display can be easily modified by change the file utility/spi_config.h so it's easy to adapt existings
- shield or piggyBack modules.
+GPIO connections to display can be easily modified by change the files in <b>_configurations</b> folder so it's easy to adapt existings shield or piggyBack modules (like the one from adafruit).
 
 Goals:
 
- - F A S T ! ! !
- - compatible with standard LiquidCrystal (apart the bads, sorry Tom!).
- - compatiple with most MCU's.
- - pin configurable to adapt other existing library.
- - small memory impact.
- - compact and small code.
+ - F A S T ! ! ! (trying to avoid digitalWrite)
+ - compatible with standard LiquidCrystal.
+ - compatible with most MCU's.
+ - pin configurable to adapt other existing hardware.
+ - possibly small memory impact.
+ - possibly compact and small code.
  - can drive large 2xHD44780 chip displays.
  - large selection of popular GPIO or Shift Register chip to save MC pins.
  - cursor position from memory.
  - autowrap.
- - backlight driving included.
+ - using HD44780 memory shadow (when possible).
+ - backlight driving support included.
+ - EXPANDABLE whithout growing up the main library.
 
 
 Description of the INSTANCES:---------------------------------------------------------------------------------
@@ -65,6 +69,7 @@ It's still not fully optimized but actually it's the 'fastest' of all libraries 
         gnd       -> [|_____|] <- EN2 (if needed)
         
 LCD's R/W to ground
+(remember that you can change gpio's connection with lcd in a file inside _configurations folder!!!)
         
 [<b>LiquidCrystal_SSPI</b>]
 
@@ -86,6 +91,7 @@ chips if you use my incoming software SPI library.
         gnd       -> [|_____|] <- EN2 (if needed)
 
 LCD's R/W to ground
+(remember that you can change gpio's connection with lcd in a file inside _configurations folder!!!)
         
 [<b>LiquidCrystal_TWI</b>]
 
@@ -119,6 +125,7 @@ though a dedicated file so it can be easily adapted to other existing hardware d
               gnd -> [|_____|] <- D5
 
 LCD's R/W to ground
+(remember that you can change gpio's connection with lcd in a file inside _configurations folder!!!)
 
 
 [<b>LiquidCrystal_SHR</b>]
@@ -138,9 +145,18 @@ though a dedicated file so it can be easily adapted to other existing hardware d
              gnd  => [|_____|] 
 
 LCD's R/W to ground
+(remember that you can change gpio's connection with lcd in a file inside _configurations folder!!!)
 
+About Backlight:----------------------------------------------------------------------------------------------
 
-Last Changes:-------------------------------------------------------------------------------------------------
+All GPIO's supported have one pin for drive led backlight but beware that you cannot use it directly!!!
+The current needed can destroy GPIO's or MCU so you need a simple circuit that can be done with transistors, 
+mosfet,etc. I haved used an IRF9120 with a couple of resistors but you can use your own one since the library
+provide a way to invert or not the way backlight it's managed. Simply open <b>_configurations/lcd_config.h</b> file,
+it contains a line called <b>#define BACKGND_LGHTINV</b> that invert the backlight pin, comment out this line will
+go back to normal. I will publish a couple of tested easy example circuits when release it's out.
+
+<b>Last Changes:</b>-------------------------------------------------------------------------------------------------
 
  - HardwareSPI version working (v a01)
  - SoftwareSPI version working (v a01)
@@ -149,10 +165,17 @@ Last Changes:-------------------------------------------------------------------
  - Fixed Software SPI (slow method) (v b0.81)
  - TWI handle more chips, some fix. (v b0.83)
  - Dropped hardware methods (useless!!!), various fix. (v b0.85) <----
+ - Lot of fix! 2xHD chip large display works, fixed garbage char issue, fixed scrolling, fixed strange issue
+ after autoscroll, slow down a little SPI thoughput that was too fast for GPIO chips (v b0.9) <----
 
-Not Tested yet:-----------------------------------------------------------------------------------------------
+<b>Not Tested or Working out:</b>-------------------------------------------------------------------------------------------
 
- - LiquidCrystal_SHR still not working (next release will...)
+ - LiquidCrystal_SHR dropped in beta (to avoid confusion in code) but will be present in the final release.
+ - Software SPI method dropped in beta but will be present in final release.
+
+<b>Know Bugs:</b>-----------------------------------------------------------------------------------------------------
+
+- A well know one still present only with 2 x HD44780 chips large displays and only related to autoscroll.
 
 <b>Speed Test and comparison with other libraries:</b>---------------------------------------------------------------
 
