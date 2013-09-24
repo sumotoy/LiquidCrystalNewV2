@@ -3,6 +3,9 @@ LiquidCrystalNew V2
 <div>Version <b>beta 0.9</b> </div>. Finally a beta stage, but still buggy. 
 DO NOT USE UNTIL 1.0 RELEASED (and tested)!! 
 
+First, have to thank a lot <b>William Greiman</b> and specially John Rain http://code.google.com/p/liquidcrystal440/ , they trult help me a lot to discover a lot of unseen things under code.
+I also thanks Tom and Limor and Paul, without their help this will never come to life.
+
 An optimized version of my old library LiquidCrystalNew.
 Purpose to this library is drive any HD44780 (or compatible) LCD easily but also compatible with the original liquidCrystal
 library. In addition this one let you use large displays and it's the only one that can drive 2 x HD44780 chip displays (normally large 4x40, very
@@ -153,7 +156,7 @@ provide a way to invert or not the way backlight it's managed. Simply open <b>_c
 it contains a line called <b>#define BACKGND_LGHTINV</b> that invert the backlight pin, comment out this line will
 go back to normal. I will publish a couple of tested easy example circuits when release it's out.
 
-Last Changes:-------------------------------------------------------------------------------------------------
+<b>Last Changes:</b>-------------------------------------------------------------------------------------------------
 
  - HardwareSPI version working (v a01)
  - SoftwareSPI version working (v a01)
@@ -165,10 +168,14 @@ Last Changes:-------------------------------------------------------------------
  - Lot of fix! 2xHD chip large display works, fixed garbage char issue, fixed scrolling, fixed strange issue
  after autoscroll, slow down a little SPI thoughput that was too fast for GPIO chips (v b0.9) <----
 
-Not Tested yet:-----------------------------------------------------------------------------------------------
+<b>Not Tested or Working out:</b>-------------------------------------------------------------------------------------------
 
  - LiquidCrystal_SHR dropped in beta (to avoid confusion in code) but will be present in the final release.
  - Software SPI method dropped in beta but will be present in final release.
+
+<b>Know Bugs:</b>-----------------------------------------------------------------------------------------------------
+
+- A well know one still present only with 2 x HD44780 chips large displays and only related to autoscroll.
 
 <b>Speed Test and comparison with other libraries:</b>---------------------------------------------------------------
 
