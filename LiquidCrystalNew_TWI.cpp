@@ -157,12 +157,6 @@ void LiquidCrystalNew_TWI::write4bits(byte value) {  //still used during init
 		bitWrite(_theData,LCDPIN_D5,(v >>= 1) & 01);
 		bitWrite(_theData,LCDPIN_D6,(v >>= 1) & 01);
 		bitWrite(_theData,LCDPIN_D7,(v >>= 1) & 01);
-/* 		const byte ggg[4] = {LCDPIN_D4,LCDPIN_D5,LCDPIN_D6,LCDPIN_D7};
-		for (byte i = 0; i < 4; i++){
-			if ((value & 0x1) == 1) _theData |= ggg[i];
-			value = (value >> 1);
-		} */
-		
 	pulseEnable(en);
 } 
 
@@ -201,10 +195,10 @@ void LiquidCrystalNew_TWI::backlight(byte val){
 void LiquidCrystalNew_TWI::writeByte(byte cmd,byte value){
 	Wire.beginTransmission(_adrs);
 #if ARDUINO >= 100
-	Wire.write(cmd);
+	if (_chipType == 0) Wire.write(cmd);
 	Wire.write(value);
 #else
-	Wire.send(cmd);
+	if (_chipType == 0) Wire.send(cmd);
 	Wire.send(value);
 #endif
 	Wire.endTransmission();
