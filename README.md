@@ -66,6 +66,7 @@ It's still not fully optimized but actually it's the 'fastest' of all libraries 
         gnd       -> [|_____|] <- EN2 (if needed)
         
 LCD's R/W to ground
+(remember that you can change gpio's connection with lcd in a file inside _configurations folder!!!)
         
 [<b>LiquidCrystal_SSPI</b>]
 
@@ -87,6 +88,7 @@ chips if you use my incoming software SPI library.
         gnd       -> [|_____|] <- EN2 (if needed)
 
 LCD's R/W to ground
+(remember that you can change gpio's connection with lcd in a file inside _configurations folder!!!)
         
 [<b>LiquidCrystal_TWI</b>]
 
@@ -120,6 +122,7 @@ though a dedicated file so it can be easily adapted to other existing hardware d
               gnd -> [|_____|] <- D5
 
 LCD's R/W to ground
+(remember that you can change gpio's connection with lcd in a file inside _configurations folder!!!)
 
 
 [<b>LiquidCrystal_SHR</b>]
@@ -139,6 +142,7 @@ though a dedicated file so it can be easily adapted to other existing hardware d
              gnd  => [|_____|] 
 
 LCD's R/W to ground
+(remember that you can change gpio's connection with lcd in a file inside _configurations folder!!!)
 
 About Backlight:----------------------------------------------------------------------------------------------
 
