@@ -56,7 +56,7 @@ void LiquidCrystalNew_SHR::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 		pinMode(_stb,OUTPUT);
 
 	#if defined(__FASTSWRITE2__)
-	/*
+	
 		sclkport = digitalPinToPort(_clk);
         sclkpin = digitalPinToBitMask(_clk);
 		dtaport = digitalPinToPort(_dta);
@@ -65,8 +65,8 @@ void LiquidCrystalNew_SHR::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
         stbpin = digitalPinToBitMask(_stb);
 		*portOutputRegister(stbport) |= stbpin;//hi
 		*portOutputRegister(sclkport) &= ~ sclkpin;//low
-	*/	
 		
+	/*	
 		sclkport     = portOutputRegister(digitalPinToPort(_clk));
 		sclkpinmask  = digitalPinToBitMask(_clk);
 		dtaport     = portOutputRegister(digitalPinToPort(_dta));
@@ -75,6 +75,7 @@ void LiquidCrystalNew_SHR::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 		stbpinmask  = digitalPinToBitMask(_stb);
 		*stbport |= stbpinmask;//hi
 		*sclkport &= ~sclkpinmask;//low
+	*/	
 	#else
 		digitalWrite(_stb,HIGH);
 		digitalWrite(_clk,LOW);
@@ -216,8 +217,8 @@ byte i;
 #if defined(__FASTSWRITE__)
 	digitalWriteFast(_stb,LOW);
 #elif defined(__FASTSWRITE2__)
-	//*portOutputRegister(stbport) &= ~ stbpin;//low
-	*stbport &= ~stbpinmask;//low
+	*portOutputRegister(stbport) &= ~ stbpin;//low
+	//*stbport &= ~stbpinmask;//low
 #else
 	digitalWrite(_stb,LOW);
 #endif
@@ -228,16 +229,16 @@ byte i;
 		digitalWriteFast(_clk, LOW);
 		#elif defined(__FASTSWRITE2__)
 		if (!!(value & (1 << (7 - i)))){
-			//*portOutputRegister(dtaport) |= dtapin;//hi
-			*dtaport |= dtapinmask;//hi
+			*portOutputRegister(dtaport) |= dtapin;//hi
+			//*dtaport |= dtapinmask;//hi
 		} else {
-			//*portOutputRegister(dtaport) &= ~ dtapin;//low
-			*dtaport &= ~dtapinmask;//low
+			*portOutputRegister(dtaport) &= ~ dtapin;//low
+			//*dtaport &= ~dtapinmask;//low
 		}
-		//*portOutputRegister(sclkport) |= sclkpin;//hi
-		*sclkport |= sclkpinmask;//hi
-		//*portOutputRegister(sclkport) &= ~ sclkpin;//low
-		*sclkport &= ~sclkpinmask;//low
+		*portOutputRegister(sclkport) |= sclkpin;//hi
+		//*sclkport |= sclkpinmask;//hi
+		*portOutputRegister(sclkport) &= ~ sclkpin;//low
+		//*sclkport &= ~sclkpinmask;//low
 		#else
 		digitalWrite(_dta, !!(value & (1 << (7 - i))));
 		digitalWrite(_clk, HIGH);
@@ -247,8 +248,8 @@ byte i;
 #if defined(__FASTSWRITE__)
 	digitalWriteFast(_stb,HIGH);
 #elif defined(__FASTSWRITE2__)
-	//*portOutputRegister(stbport) |= stbpin;//hi
-	*stbport |= stbpinmask;//hi
+	*portOutputRegister(stbport) |= stbpin;//hi
+	//*stbport |= stbpinmask;//hi
 #else
 	digitalWrite(_stb,HIGH);
 #endif

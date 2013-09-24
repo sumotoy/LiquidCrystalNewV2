@@ -38,12 +38,14 @@ private:
 	void 				writeGpio(byte value);								//
 	void 				writeByte(byte value);
 	#if defined(__FASTSWRITE2__)
-	/*
-	uint8_t stbport, dtaport, sclkport;
+	
+	volatile uint8_t stbport, dtaport, sclkport;
 	uint8_t stbpin, dtapin, sclkpin;
-	*/
+	
+	/*
 	volatile uint8_t *stbport, *dtaport, *sclkport;
 	uint8_t stbpinmask, dtapinmask, sclkpinmask;
+	*/
 	#endif
 };	
 
