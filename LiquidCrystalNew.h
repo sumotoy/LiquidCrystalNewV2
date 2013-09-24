@@ -5,8 +5,7 @@
 
 #include "HD44780.h"
 #include "_utility/cpuident.h"				// identify the MCU used
-// #include "pins_arduino.h"
-// #include "wiring_private.h"
+
 
 /*
 	This is the direct connect methods exact as the canonical liquidLibrary from arduino.
@@ -23,9 +22,13 @@ class LiquidCrystalNew : public HD44780
 public:
 	LiquidCrystalNew(const byte rs,const byte en1,const byte en2,const byte d0,const byte d1,const byte d2,const byte d3,const byte bk);
 	LiquidCrystalNew(const byte rs,const byte en1,const byte d0,const byte d1,const byte d2,const byte d3,const byte bk);
-	virtual void 	begin(byte cols, byte rows, uint8_t charsize = LCD_5x8DOTS); 
+	//#if (ARDUINO <  100)
+	virtual void 	begin(uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS); 
 	virtual void 	send(uint8_t value, byte mode);
 	virtual void 	backlight(byte value);
+	virtual void 	on(void);
+	virtual void 	off(void);
+
 private:
 	byte 			_rs_pin;	// LOW: command.  HIGH: character.
 	byte 			_data_pins[4];

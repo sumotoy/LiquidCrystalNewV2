@@ -28,7 +28,7 @@ LiquidCrystalNew_TWI::LiquidCrystalNew_TWI(const byte adrs,const byte chip,const
 	_y = 0;
 	_setCursFlag = 0;
 	_direction = LCD_Right;
-	_chip = 0;
+	setChip(0);
 #ifdef BACKGND_LGHTINV
 	_backLight = 0;
 #else
@@ -45,7 +45,7 @@ LiquidCrystalNew_TWI::LiquidCrystalNew_TWI(const byte adrs,const byte chip,const
 
 
 
-void LiquidCrystalNew_TWI::begin(byte cols, byte lines, uint8_t dotsize) {
+void LiquidCrystalNew_TWI::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 
 	Wire.begin();
 	
@@ -57,16 +57,16 @@ void LiquidCrystalNew_TWI::begin(byte cols, byte lines, uint8_t dotsize) {
 	writeByte(0x00,0x00);//set as out (IODIR)
 	writeByte(0x09,0b00000000);//write all low to GPIO
 
-	_numcols = cols;    //there is an implied lack of trust; the private version can't be munged up by the user.
-	_numlines = lines;
-	_row_offsets[2] = cols + _row_offsets[0];  //should autoadjust for 16/20 or whatever columns now
-	_row_offsets[3] = cols + _row_offsets[1];
+	_lcd_cols = cols;    //there is an implied lack of trust; the private version can't be munged up by the user.
+	_lcd_lines = lines;
+	_row_offsets[2] = _lcd_cols + _row_offsets[0];  //should autoadjust for 16/20 or whatever columns now
+	_row_offsets[3] = _lcd_cols + _row_offsets[1];
 	initChip(dotsize,_en1);
 	//manage second chip if exists
 	if (_multipleChip) {
 		_row_offsets[2] = 0;
 		_row_offsets[3] = 0x40; //each line gets its own little 40 char section of DDRAM--would be fine if there were a 4x32, I suppose
-		_chip = 2;
+		setChip(2);
 		initChip(dotsize,_en2);//initialize the second HD44780 chip
 	}
 }
@@ -76,9 +76,9 @@ void LiquidCrystalNew_TWI::begin(byte cols, byte lines, uint8_t dotsize) {
 void LiquidCrystalNew_TWI::initChip(uint8_t dotsize, byte witchEnablePin) {  
 	byte	displayfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS;
 	byte i;
-	if (_numlines > 1) displayfunction |= LCD_2LINE;
+	if (_lcd_lines > 1) displayfunction |= LCD_2LINE;
 	// for some 1 line displays you can select a 10 pixel high font
-	if ((dotsize != 0) && (_numlines == 1)) displayfunction |= LCD_5x10DOTS;
+	if ((dotsize != 0) && (_lcd_lines == 1)) displayfunction |= LCD_5x10DOTS;
 
 	for (i=0;i<18;i++) {
 		delayMicroseconds(LCD_STARTUP_DLY);
@@ -112,12 +112,25 @@ void LiquidCrystalNew_TWI::initChip(uint8_t dotsize, byte witchEnablePin) {
 	// set the entry mode
 	command(LCD_ENTRYMODESET | _displaymode);	
 	//writeGpio(_theData | witchEnablePin);   // En HIGH ---------------------------------
+	noAutoscroll();
+}
+
+
+void LiquidCrystalNew_TWI::on(void) {
+	display();
+	backlight(1);
+}
+
+void LiquidCrystalNew_TWI::off(void) {
+	noDisplay();
+	backlight(0);
 }
 
 // write either command or data, with automatic 4/8-bit selection
 void LiquidCrystalNew_TWI::send(uint8_t value, byte mode) {
 	byte en = _en1;
-	if (_multipleChip && _chip) en = _en2;
+	byte testChip = getChip();
+	if (_multipleChip && testChip) en = _en2;
 	//delayMicroseconds(DELAYPERCHAR);
 	setDataMode(mode);					// I2C & SPI
 		bitWrite(_theData,LCDPIN_D4,value & 0x10);
@@ -137,8 +150,9 @@ void LiquidCrystalNew_TWI::send(uint8_t value, byte mode) {
 void LiquidCrystalNew_TWI::write4bits(byte value) {  //still used during init
 	register byte v = value;
 	byte en = _en1;
+	byte testChip = getChip();
  // 4x40 LCD with 2 controller chips with separate enable lines if we called w 2 enable pins and are on lines 2 or 3 enable chip 2  
-	if (_multipleChip && _chip) en = _en2;   
+	if (_multipleChip && testChip) en = _en2;   
 		bitWrite(_theData,LCDPIN_D4,v & 01);
 		bitWrite(_theData,LCDPIN_D5,(v >>= 1) & 01);
 		bitWrite(_theData,LCDPIN_D6,(v >>= 1) & 01);

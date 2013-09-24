@@ -43,7 +43,7 @@ void LiquidCrystalNew::init(const byte rs,const byte en1,const byte en2,const by
 	_y = 0;
 	_setCursFlag = 0;
 	_direction = LCD_Right;
-	_chip = 0;
+	setChip(0);
 	if (_en2 != 255) {
 		_multipleChip = 1;
 	} else {
@@ -62,7 +62,7 @@ void LiquidCrystalNew::init(const byte rs,const byte en1,const byte en2,const by
 }
 
 	
-void LiquidCrystalNew::begin(byte cols, byte lines, uint8_t dotsize) {
+void LiquidCrystalNew::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 	
 	#if defined(__FASTSWRITE2__)	
 		fastPinMode(_data_pins[0], OUTPUT);
@@ -112,16 +112,16 @@ void LiquidCrystalNew::begin(byte cols, byte lines, uint8_t dotsize) {
 			digitalWrite(_data_pins[i],LOW);
 		}
 	#endif
-	_numcols = cols;    //there is an implied lack of trust; the private version can't be munged up by the user.
-	_numlines = lines;
-	_row_offsets[2] = cols + _row_offsets[0];  //should autoadjust for 16/20 or whatever columns now
-	_row_offsets[3] = cols + _row_offsets[1];
+	_lcd_cols = cols;    //there is an implied lack of trust; the private version can't be munged up by the user.
+	_lcd_lines = lines;
+	_row_offsets[2] = _lcd_cols + _row_offsets[0];  //should autoadjust for 16/20 or whatever columns now
+	_row_offsets[3] = _lcd_cols + _row_offsets[1];
 	initChip(dotsize,_en1);
 	//manage second chip if exists
 	if (_multipleChip) {
 		_row_offsets[2] = 0;
 		_row_offsets[3] = 0x40; //each line gets its own little 40 char section of DDRAM--would be fine if there were a 4x32, I suppose
-		_chip = 2;
+		setChip(2);
 		initChip(dotsize,_en2);//initialize the second HD44780 chip
 	}
 }
@@ -129,9 +129,9 @@ void LiquidCrystalNew::begin(byte cols, byte lines, uint8_t dotsize) {
 void LiquidCrystalNew::initChip(uint8_t dotsize, byte enPin) {  
 	byte	displayfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS;
 	byte i;
-	if (_numlines > 1) displayfunction |= LCD_2LINE;
+	if (_lcd_lines > 1) displayfunction |= LCD_2LINE;
 	// for some 1 line displays you can select a 10 pixel high font
-	if ((dotsize != 0) && (_numlines == 1)) displayfunction |= LCD_5x10DOTS;
+	if ((dotsize != 0) && (_lcd_lines == 1)) displayfunction |= LCD_5x10DOTS;
 
 	for (i=0;i<18;i++) {
 		delayMicroseconds(LCD_STARTUP_DLY);
@@ -160,14 +160,16 @@ void LiquidCrystalNew::initChip(uint8_t dotsize, byte enPin) {
 	_displaymode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
 	// set the entry mode
 	command(LCD_ENTRYMODESET | _displaymode);	
+	noAutoscroll();
 }
 
 // write either command or data, with automatic 4/8-bit selection
 void LiquidCrystalNew::send(uint8_t value, byte mode) {
 	byte en = _en1;
-	if (_multipleChip && _chip) en = _en2;
+	byte testChip = getChip();
+	if (_multipleChip && testChip) en = _en2;
 	//delayMicroseconds(DELAYPERCHAR);
-	nop;
+	//nop;
 	setDataMode(mode);	
 	#if defined(__FASTSWRITE2__)
 		fastDigitalWrite(_data_pins[0],value & 0x10);
@@ -214,10 +216,10 @@ void LiquidCrystalNew::write4bits(byte value) {  //still used during init
 	register byte v = value;
 
 	byte *pinptr = _data_pins;
-
+    byte testChip = getChip();
 	byte en = _en1;
  // 4x40 LCD with 2 controller chips with separate enable lines if we called w 2 enable pins and are on lines 2 or 3 enable chip 2  
-	if (_multipleChip && _chip) en = _en2; 
+	if (_multipleChip && testChip) en = _en2; 
 	#if defined(__FASTSWRITE2__)
 		fastDigitalWrite(*pinptr++,v & 01);
 		fastDigitalWrite(*pinptr++,(v >>= 1) & 01);
@@ -266,7 +268,15 @@ void LiquidCrystalNew::pulseEnable(byte enPin) {
 	#endif
 }
 
+void LiquidCrystalNew::on(void) {
+	display();
+	backlight(1);
+}
 
+void LiquidCrystalNew::off(void) {
+	noDisplay();
+	backlight(0);
+}
 
 void LiquidCrystalNew::backlight(byte val){
 #ifdef BACKGND_LGHTINV

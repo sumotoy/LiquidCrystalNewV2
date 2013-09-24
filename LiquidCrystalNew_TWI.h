@@ -28,9 +28,11 @@ class LiquidCrystalNew_TWI : public HD44780
 {
 public:
 	LiquidCrystalNew_TWI(const byte adrs=0x20,const byte chip = 0,const byte chip_type = MCP23008);//use twi
-	virtual void 		begin(byte cols, byte rows, uint8_t charsize = LCD_5x8DOTS); 
+	virtual void 		begin(uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS); 
 	virtual void 		send(uint8_t value, byte mode);
 	virtual void 		backlight(byte value);
+	virtual void 		on(void);
+	virtual void 		off(void);
 private:
 	byte				_adrs;				//I2C address
 	byte				_theData;			//8 bit of the GPIO chip or SR, not used in direct

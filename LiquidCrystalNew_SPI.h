@@ -30,10 +30,13 @@ public:
 */
 	LiquidCrystalNew_SPI(const byte cs,const byte chip=0,const byte adrs=0x20,const byte avoidSPIinit=0);//use software SPI
 	// classical LCD begin
-	virtual void 		begin(byte cols, byte rows, uint8_t charsize = LCD_5x8DOTS); 
+	virtual void 		begin(uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS); 
 	virtual void 		backlight(byte value);
 	//following it's used by library and should never used in sketch.
-	virtual void 		send(uint8_t value, byte mode);
+	virtual void 		send(byte value, byte mode);
+	virtual void 		on(void);
+	virtual void 		off(void);
+	
 private:
 	byte				_cs;												//used only in SPI, the CS pin
 	byte				_adrs;												//SPI address or I2C address
@@ -46,9 +49,7 @@ private:
 	void 				pulseEnable(byte witchEnablePin);					//
 	void 				writeGpio(byte value);								//
 	#if defined(__FASTSWRITE2__)
-	void inline			sendSPI(byte data){ SPDR = data; while(!(SPSR & _BV(SPIF))); };
-	volatile uint8_t 	*csport;
-	uint8_t 			cspinmask;
+ 	void inline			sendSPI(byte data){ SPDR = data; while(!(SPSR & _BV(SPIF))); };
 	#endif
 };	
 
