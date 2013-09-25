@@ -3,10 +3,14 @@ LiquidCrystalNew V2
 <div>Version <b>beta 0.94</b> </div>. Finally a beta stage, but still buggy. 
 DO NOT USE UNTIL 1.0 RELEASED (and tested)!! 
 
-First, have to thank a lot <b>William Greiman</b> and specially John Rain http://code.google.com/p/liquidcrystal440/ , they truly help me a lot to discover a lot of unseen things about coding.
+First, have to thank a lot <b>William Greiman</b> and specially <b>John Rain</b> http://code.google.com/p/liquidcrystal440/ , they truly help me a lot to discover a lot of unseen things about coding.
 I also thanks Tom and Limor and Paul, without their help this will never come to life.
 
-An optimized version of my old library LiquidCrystalNew.
+I wrote this library mainly for my needs... I have a lot of LCD laying around my place, mostly recovered by whatever, so I had to modify continuosly existings library because don't work with all LCD's.
+Existings libraries has 2 main missed features:
+ - do not handle LCD that uses 2xHD44780 chip (believe me, are NOT rare).
+ - do not uses SPI GPIO chip like MCP23S08 or not use properly.
+In addition, I never see a fix about setCursor that use HD ram and not tracked correctly, this until I see <b>John Rain</b> library that really inspired me alot.
 Purpose to this library is drive any HD44780 (or compatible) LCD easily but also compatible with the original liquidCrystal
 library. In addition this one let you use large displays and it's the only one that can drive 2 x HD44780 chip displays (normally large 4x40, very
 easy to find used in ebay).It's faster than original and better suited since had several bugfix and support for HD44780
