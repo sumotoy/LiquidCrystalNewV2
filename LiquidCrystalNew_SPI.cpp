@@ -8,9 +8,7 @@
 #endif
 
 #include "LiquidCrystalNew_SPI.h"
-#if defined(__FASTSWRITE2__)	
-#include "_utility/DigitalIO/DigitalPin.h"
-#endif
+
 #include <../SPI/SPI.h>
 
 //1/2 chip with software SPI GPIO (3 wire)
@@ -82,11 +80,12 @@ SPI_CLOCK_DIV8
 	SPI.setDataMode(SPI_MODE0);
 	#endif
 }	
-#if defined(__FASTSWRITE2__)
-	fastPinMode(_cs, OUTPUT);
-	fastDigitalWrite(_cs, HIGH);
-#else
 	pinMode(_cs, OUTPUT); //set data pin modes
+#if defined(__FASTSWRITE2__)
+	csport = digitalPinToPort(_cs);
+    cspin = digitalPinToBitMask(_cs);
+	*portOutputRegister(csport) |= cspin;//hi
+#else
 	digitalWrite(_cs, HIGH);
 #endif
 
@@ -239,11 +238,11 @@ void LiquidCrystalNew_SPI::backlight(byte val){
 void LiquidCrystalNew_SPI::writeByte(byte cmd,byte value){
 //start send
 #if defined(__FASTSWRITE2__)
-	fastDigitalWrite(_cs, LOW);
+	*portOutputRegister(csport) &= ~ cspin;//low
 	sendSPI(_adrs << 1);
 	sendSPI(cmd);
 	sendSPI(value); 
-	fastDigitalWrite(_cs, HIGH);
+	*portOutputRegister(csport) |= cspin;//hi
 #elif defined(__FASTSWRITE__)
 	digitalWriteFast(_cs, LOW);
 	SPI.transfer(_adrs << 1);

@@ -51,6 +51,9 @@ private:
 	void 				writeGpio(byte value);								//
 	#if defined(__FASTSWRITE2__)
  	void inline			sendSPI(byte data){ SPDR = data; while(!(SPSR & _BV(SPIF))); };
+	
+	volatile uint8_t 	csport;
+	uint8_t 			cspin;
 	#endif
 };	
 
