@@ -19,7 +19,7 @@ stuck to ground in SPI,SR,I2C versions to save GPIO pins for drive a second HD44
 additional processor pin (using GPIO's version of course).New library design let user to choose from several different methods
 to save microcontroller pins, for example: TWI (MCP23S008,PCF8574,PCF8574A), SPI (only MCP23Sxx series), Shift Register (74xx595) or connect directly display
 without use any GPIO's.
-To use existingg commercial hardware shields or Piggy Back, you can load a personalized configuration file at the top of the sketch.
+To use existing commercial hardware shields or Piggy Back, you can load a personalized configuration file at the top of the sketch.
 
 Goals:
 
