@@ -12,9 +12,9 @@ Existings libraries has 2 main missed features:
  - do not uses SPI GPIO chip like MCP23S08 or not use properly.
 
 In addition, I never see a fix about setCursor that use HD ram and not tracked correctly, this until I see <b>John Rain</b> library that really inspired me alot.
-Purpose to this library is drive any HD44780 (or compatible) LCD easily but also compatible with the original liquidCrystal
+Purpose to this library is drive any HD44780 (or compatible) LCD easily but should also remain compatible with the original liquidCrystal
 library. In addition this one let you use large displays and it's the only one that can drive 2 x HD44780 chip displays (normally large 4x40, very
-easy to find used in ebay).It's faster than original and better suited since had several bugfix and support for HD44780
+easy to find used in ebay).It's faster than original and better suited since had several bugfix and support for SPI and I2C gpio's.
 hardware memory. Library it's able to drive LCD by using several GPIO's chips (that use just 2,or 3 wires) in fast way, for example using SPI MCP23S08 you get almost the same speed of direct connected LCD!
 I know there's other libraries around but I wrote this for my needs some years ago and at the time I'm wroting this, none of them has all the features of this oneso if you need a pretty universal library for HD44780 displays that it's fast and pin saver
 you can try this one :-)
