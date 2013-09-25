@@ -209,9 +209,9 @@ void LiquidCrystalNew_SPI::_setDataMode(byte mode) {
 
 void LiquidCrystalNew_SPI::pulseEnable(byte witchEnablePin) {
 	writeGpio(_theData | witchEnablePin);   // En HIGH
-	//NANOD;
+	NANOD;
 	writeGpio(_theData & ~witchEnablePin);  // En LOW
-	//NANOD;
+	NANOD;
 }
 
 
