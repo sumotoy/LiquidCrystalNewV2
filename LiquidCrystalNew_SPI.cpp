@@ -65,9 +65,8 @@ if (!_avoidInit){
 /*
 SPI_CLOCK_DIV2    //24.0 MHz ----> ???
 SPI_CLOCK_DIV4    //12.0 MHz ----> ok
-SPI_CLOCK_DIV6    //08.0 MHz ----> ok
 SPI_CLOCK_DIV8    //05.3 MHz ----> ok
-SPI_CLOCK_DIV16   //03.0 MHz ----> ok
+SPI_CLOCK_DIV16   //03.0 MHz ----> ok 48Mhz/96Mhz
 SPI_CLOCK_DIV32   //01.5 MHz ----> ok
 SPI_CLOCK_DIV64   //750 KHz
 SPI_CLOCK_DIV128  //375 Khz
@@ -219,9 +218,9 @@ void LiquidCrystalNew_SPI::_setDataMode(byte mode) {
 
 void LiquidCrystalNew_SPI::pulseEnable(byte witchEnablePin) {
 	writeGpio(_theData | witchEnablePin);   // En HIGH
-	NANOD;
+	nop;nop;nop;nop;nop;nop;nop;nop;
 	writeGpio(_theData & ~witchEnablePin);  // En LOW
-	NANOD;
+	HD44780DLY_OUT();// in theory (datasheet on hand) commands need > 37us
 }
 
 

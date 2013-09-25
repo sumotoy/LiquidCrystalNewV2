@@ -260,18 +260,17 @@ void LiquidCrystalNew::setDataMode(byte mode) {
 void LiquidCrystalNew::pulseEnable(byte enPin) {
 	#if defined(__FASTSWRITE2__)
 		fastDigitalWrite(enPin,HIGH);   // enable pulse must be >450ns
-		// enable pulse must be >450ns (TODO!!!!!!!!!!!!)
-		NANOD;
+		nop;nop;nop;nop;nop;nop;nop;nop; //>450ns in theory?!?!
 		fastDigitalWrite(enPin,LOW);
 	#elif defined (__FASTSWRITE__)
 		digitalWriteFast(enPin,HIGH);   // enable pulse must be >450ns
-		// enable pulse must be >450ns (TODO!!!!!!!!!!!!)
-		NANOD;
+		nop;nop;nop;nop;nop;nop;nop;nop; //>450ns in theory?!?!
 		digitalWriteFast(enPin,LOW);
 	#else
 		digitalWrite(enPin,HIGH);   // enable pulse must be >450ns
 		digitalWrite(enPin,LOW);
 	#endif
+	HD44780DLY_OUT();
 }
 
 void LiquidCrystalNew::on(void) {

@@ -12,11 +12,16 @@
 
 #include "_utility/cpuident.h"				// identify the MCU used
 #include "_configurations/HD44780_constants.h"		// lcd controller constants
+
+//set timing things
+#define nop asm volatile ("nop\n\t")
+//#define NANOD asm volatile ("nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t")
+
 /*
 Created by Max MC Costa for sumotoy,(sumotoy@gmail.com)
-Portions by John Rain http://code.google.com/p/liquidcrystal440/ 
+Portions by John Rain http://code.google.com/p/liquidcrystal440/  (thanks for this, great work man!)
 	This is the main library that holds all HD44780 methods common to all other child libraries
-	that uses specific hardware
+	that uses specific hardware...
 */
 class HD44780 : public Print 
 {
@@ -83,12 +88,25 @@ protected:
 	inline void 	commandBoth(byte value)  {if (!_multipleChip) {command(value);}else{byte chipSave = getChip();setChip(0);command(value);setChip(2);command(value);setChip(chipSave);}}
 	inline void		setChip(byte chip){ _chip = chip; }
 	inline byte		getChip(){ return _chip; }
+	//again timing things...
+#if defined(__FASTSWRITE__)
+	inline void		HD44780DLY_OUT() { delayMicroseconds(25); }
+#elif defined(__FASTSWRITE2__)
+	inline void		HD44780DLY_OUT() { delayMicroseconds(1); }
+#else
+	#if defined(__TEENSY3X__)
+	inline void		HD44780DLY_OUT() { delayMicroseconds(25); }
+	#else
+	inline void		HD44780DLY_OUT() { nop; }
+	#endif
+#endif
+	
 private:
 #if (ARDUINO <  100)
 	virtual void send(byte value, byte mode) { };
 #else
 	virtual void send(byte value, byte mode) = 0;
 #endif
-	void inline		delayForHome() {delayMicroseconds(LCD_HOME_DLY);}
+	inline void		delayForHome() {delayMicroseconds(LCD_HOME_DLY);}
 };
 #endif
