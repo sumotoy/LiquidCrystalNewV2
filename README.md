@@ -10,6 +10,7 @@ I wrote this library mainly for my needs... I have a lot of LCD laying around my
 Existings libraries has 2 main missed features:
  - do not handle LCD that uses 2xHD44780 chip (believe me, are NOT rare).
  - do not uses SPI GPIO chip like MCP23S08 or not use properly.
+ - 
 In addition, I never see a fix about setCursor that use HD ram and not tracked correctly, this until I see <b>John Rain</b> library that really inspired me alot.
 Purpose to this library is drive any HD44780 (or compatible) LCD easily but also compatible with the original liquidCrystal
 library. In addition this one let you use large displays and it's the only one that can drive 2 x HD44780 chip displays (normally large 4x40, very
