@@ -1,6 +1,6 @@
 LiquidCrystalNew V2   
 ===================
-<div>Version <b>beta 0.91</b> </div>. Finally a beta stage, but still buggy. 
+<div>Version <b>beta 0.94</b> </div>. Finally a beta stage, but still buggy. 
 DO NOT USE UNTIL 1.0 RELEASED (and tested)!! 
 
 First, have to thank a lot <b>William Greiman</b> and specially John Rain http://code.google.com/p/liquidcrystal440/ , they truly help me a lot to discover a lot of unseen things about coding.
@@ -19,7 +19,7 @@ stuck to ground in SPI,SR,I2C versions to save GPIO pins for drive a second HD44
 additional processor pin (using GPIO's version of course).New library design let user to choose from several different methods
 to save microcontroller pins, for example: TWI (MCP23S008,PCF8574,PCF8574A), SPI (only MCP23Sxx series), Shift Register (74xx595) or connect directly display
 without use any GPIO's.
-GPIO connections to display can be easily modified by change the files in <b>_configurations</b> folder so it's easy to adapt existings shield or piggyBack modules (like the one from adafruit).
+To use existingg commercial hardware shields or Piggy Back, you can load a personalized configuration file at the top of the sketch.
 
 Goals:
 
@@ -167,7 +167,8 @@ go back to normal. I will publish a couple of tested easy example circuits when 
  - Dropped hardware methods (useless!!!), various fix. (v b0.85) <----
  - Lot of fix! 2xHD chip large display works, fixed garbage char issue, fixed scrolling, fixed strange issue
  after autoscroll, slow down a little SPI thoughput that was too fast for GPIO chips (v b0.9)
- - Beta version of shift register method. (v b0.91) <----
+ - Beta version of shift register method. (v b0.91) 
+ - Cleaned methods, added external config file (usable from sketch). (v b0.94) <----
 
 <b>Not Tested or Working out:</b>-------------------------------------------------------------------------------------------
 
