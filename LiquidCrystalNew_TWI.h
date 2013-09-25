@@ -11,13 +11,13 @@
 	called LiquidCrystalNew_TWI2.
 	It has all the fetures of LiquidCrystalNew included 2 x HD44780 handling.
 	If you are using a ready made piggyBack module that uses this chip but connections with LCD
-	are different you can change pin configuration below (change to gpio_config_b.h and
-	modify or just rename it and modify)
+	are different you can include in the sketch BEFORE includes your personalized configuration file (take a look inside
+	_configurations folder)
 	Library can directly used with this commercial product:
 		http://www.ladyada.net/products/i2cspilcdbackpack/index.html
 */
 
-#include "_configurations/gpio_config_MCP23X08.h"		// GPIO pin configuration, how the GPIO is connected to LCD		
+//#include "_configurations/gpio_config_MCP23X08.h"		// GPIO pin configuration, how the GPIO is connected to LCD		
 
 #define MCP23008 0
 #define PCF8574  1

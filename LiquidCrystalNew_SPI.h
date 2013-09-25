@@ -13,10 +13,14 @@ Fast DigitalIO by William Greiman
 	with a max of 8 chip of the MCP23Sxx series.
 	It has all the fetures of LiquidCrystalNew included 2 x HD44780 handling.
 	If you are using a ready made piggyBack module that uses this chip but connections with LCD
-	are different you can change pin configuration below (change to gpio_config_b.h and
-	modify or just rename it and modify)
+	are different you can include in the sketch BEFORE includes your personalized configuration file (take a look inside
+	_configurations folder)
+	Example:
+	for use with this product 	http://www.ladyada.net/products/i2cspilcdbackpack/index.html include at the top of your sketch:
+	#include "../LiquidCrystalNew/_configurations/pin_config_ladyada.h"
+	This will override the default config file.
 */
-#include "_configurations/gpio_config_MCP23X08.h"	// GPIO pin configuration, how the GPIO is connected to LCD		
+	
 
 class LiquidCrystalNew_SPI : public HD44780
 {

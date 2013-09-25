@@ -10,6 +10,11 @@
 #include "LiquidCrystalNew_TWI.h"
 #include <../Wire/Wire.h>
 
+#if !defined(_LCDGPIOPINCONFIG_H_)
+	#include "_configurations/pin_config_default.h"
+	//#error you should include a configuration file!!!
+#endif
+
 //1/2 chip with software SPI GPIO (3 wire)
 LiquidCrystalNew_TWI::LiquidCrystalNew_TWI(const byte adrs,const byte chip,const byte chipType){
 	if (chip == 0 || chip == 255){

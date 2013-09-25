@@ -16,6 +16,11 @@
 #include "wiring_private.h"
 #endif
 
+#if !defined(_LCDGPIOPINCONFIG_H_)
+	#include "_configurations/pin_config_default.h"
+	//#error you should include a configuration file!!!
+#endif
+
 //1/2 chip with software SPI GPIO (3 wire)
 LiquidCrystalNew_SPI::LiquidCrystalNew_SPI(const byte cs,const byte chip,const byte adrs,const byte avoidSPIinit){
 	if (chip == 0 || chip == 255){

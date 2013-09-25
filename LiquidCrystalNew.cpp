@@ -12,6 +12,12 @@
 #if defined(__FASTSWRITE2__)	
 #include "_utility/DigitalIO/DigitalPin.h"
 #endif
+
+#ifndef _LCDGPIOPINCONFIG_H_
+	#include "_configurations/pin_config_dummy.h"
+	//#error you should include a configuration file!!!
+#endif
+
 //2 chip
 LiquidCrystalNew::LiquidCrystalNew(const byte rs,const byte en1,const byte en2,const byte d0,const byte d1,const byte d2,const byte d3,const byte bk){
 	init(rs,en1,en2,d0,d1,d2,d3,bk);

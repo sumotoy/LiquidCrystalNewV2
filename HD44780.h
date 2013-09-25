@@ -11,7 +11,7 @@
 #include <Print.h>
 
 #include "_utility/cpuident.h"				// identify the MCU used
-#include "_configurations/lcd_config.h"		// lcd controller constants
+#include "_configurations/HD44780_constants.h"		// lcd controller constants
 /*
 Created by Max MC Costa for sumotoy,(sumotoy@gmail.com)
 Portions by John Rain http://code.google.com/p/liquidcrystal440/ 

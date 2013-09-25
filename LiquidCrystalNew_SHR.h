@@ -10,10 +10,10 @@ Created by Max MC Costa for sumotoy,(sumotoy@gmail.com)
 	This variation of the LiquidCrystalNew allow use a shift register chip (any 74XX595) as GPIO to save pins.
 	It has all the fetures of LiquidCrystalNew included 2 x HD44780 handling.
 	If you are using a ready made piggyBack module that uses this chip but connections with LCD
-	are different you can change pin configuration below (change to _configurations/gpio_config_74XX595.h and
-	modify or just copy it and modify)
+	are different you can include in the sketch BEFORE includes your personalized configuration file (take a look inside
+	_configurations folder)
 */
-#include "_configurations/gpio_config_74XX595.h"	// GPIO pin configuration, how the GPIO is connected to LCD		
+//#include "_configurations/gpio_config_74XX595.h"	// GPIO pin configuration, how the GPIO is connected to LCD		
 
 class LiquidCrystalNew_SHR : public HD44780
 {

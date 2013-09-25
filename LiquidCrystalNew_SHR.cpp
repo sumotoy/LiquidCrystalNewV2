@@ -15,6 +15,11 @@
 #include "wiring_private.h"
 #endif
 
+#if !defined(_LCDGPIOPINCONFIG_H_)
+	#include "_configurations/pin_config_default.h"
+	//#error you should include a configuration file!!!
+#endif
+
 //1/2 chip with a 595 shift register GPIO (3 wire)
 LiquidCrystalNew_SHR::LiquidCrystalNew_SHR(const byte clk,const byte data,const byte strobe,const byte chip){
 	if (chip == 0 || chip == 255){
