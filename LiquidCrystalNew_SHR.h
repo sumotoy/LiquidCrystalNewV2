@@ -7,7 +7,6 @@
 #include "HD44780.h"
 /*
 Created by Max MC Costa for sumotoy,(sumotoy@gmail.com)
-Fast DigitalIO by William Greiman
 	This variation of the LiquidCrystalNew allow use a shift register chip (any 74XX595) as GPIO to save pins.
 	It has all the fetures of LiquidCrystalNew included 2 x HD44780 handling.
 	If you are using a ready made piggyBack module that uses this chip but connections with LCD
@@ -38,14 +37,8 @@ private:
 	void 				writeGpio(byte value);								//
 	void 				writeByte(byte value);
 	#if defined(__FASTSWRITE2__)
-	
 	volatile uint8_t stbport, dtaport, sclkport;
 	uint8_t stbpin, dtapin, sclkpin;
-	
-	/*
-	volatile uint8_t *stbport, *dtaport, *sclkport;
-	uint8_t stbpinmask, dtapinmask, sclkpinmask;
-	*/
 	#endif
 };	
 
