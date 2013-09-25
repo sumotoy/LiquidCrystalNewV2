@@ -11,6 +11,11 @@
 
 #include <../SPI/SPI.h>
 
+#if defined(__FASTSWRITE2__)	
+#include "pins_arduino.h"
+#include "wiring_private.h"
+#endif
+
 //1/2 chip with software SPI GPIO (3 wire)
 LiquidCrystalNew_SPI::LiquidCrystalNew_SPI(const byte cs,const byte chip,const byte adrs,const byte avoidSPIinit){
 	if (chip == 0 || chip == 255){
