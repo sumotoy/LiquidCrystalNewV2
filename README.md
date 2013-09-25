@@ -38,7 +38,6 @@ Goals:
  - large selection of popular GPIO or Shift Register chip to save MC pins.
  - cursor position from memory.
  - autowrap.
- - using HD44780 memory shadow (when possible).
  - backlight driving support included.
  - EXPANDABLE whithout growing up the main library.
 
