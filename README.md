@@ -1,9 +1,11 @@
 LiquidCrystalNew V2   
 ===================
-<div>Version <b>beta 0.94</b> </div>. Finally a beta stage, but still buggy. 
-DO NOT USE UNTIL 1.0 RELEASED (and tested)!! 
+<div>Version <b>beta 0.99</b> </div>. Finally a beta stage. 
+Actually tested and verified all istances with Teensy3 (all speed) and Arduino duemilanove,uno,micro,mega.
+Double chip HD44780 LCD's tested and verified in all instances.
+Not tested yet with DUE (mine it's actually broken) but looks compile ok so I'm positive about.
 
-First, have to thank a lot <b>William Greiman</b> and specially <b>John Rain</b> http://code.google.com/p/liquidcrystal440/ , they truly help me a lot to discover a lot of unseen things about coding.
+First, have to thank a lot <b>Paul Stoffregen</b> and <b>John Rain</b> http://code.google.com/p/liquidcrystal440/ , they truly help me a lot to discover a lot of unseen things about coding.
 I also thanks Tom and Limor and Paul, without their help this will never come to life.
 
 I wrote this library mainly for my needs... I have a lot of LCD laying around my place, mostly recovered by whatever, so I had to modify continuosly existings library because don't work with all LCD's.
@@ -131,6 +133,11 @@ though a dedicated file so it can be easily adapted to other existing hardware d
 LCD's R/W to ground
 (remember that you can change gpio's connection with lcd in a file inside _configurations folder!!!)
 
+[<b>LiquidCrystalNew_T3TWI</b>]
+
+An experimenta version uses 2 wire MCP23008,PCF8574 & PCF8574A chip as GPIO and it's directly compatible with ladyada LCD piggyback. GPIO pins are freely configurable
+though a dedicated file so it can be easily adapted to other existing hardware design.
+Works exact like the TWI version but this is <u>only for Teesy3!!!</b>. Look up examples for more informations.
 
 [<b>LiquidCrystal_SHR</b>]
 
@@ -172,11 +179,9 @@ go back to normal. I will publish a couple of tested easy example circuits when 
  - Lot of fix! 2xHD chip large display works, fixed garbage char issue, fixed scrolling, fixed strange issue
  after autoscroll, slow down a little SPI thoughput that was too fast for GPIO chips (v b0.9)
  - Beta version of shift register method. (v b0.91) 
- - Cleaned methods, added external config file (usable from sketch). (v b0.94) <----
+ - Cleaned methods, added external config file (usable from sketch). (v b0.94)
+ - Usable version. Tested w Arduino & Teensy3. Timings almost 99%ok.Added fast I2C for Teensy3. (v 0.99)<----
 
-<b>Not Tested or Working out:</b>-------------------------------------------------------------------------------------------
-
- - Software SPI method dropped in beta but will be present in final release.
 
 <b>Know Bugs:</b>-----------------------------------------------------------------------------------------------------
 
