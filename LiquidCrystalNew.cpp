@@ -1,22 +1,27 @@
 #include <stdio.h>
-#include <string.h>
+//#include <string.h>
 #include <inttypes.h>
 #if (ARDUINO <  100)
 	#include <WProgram.h>
+	#if defined(__FASTSWRITE2__)	
+		#include "pins_arduino.h"
+		#include "wiring.h"
+	#endif
 #else
 	#include <Arduino.h>
+	#if defined(__FASTSWRITE2__)	
+		#include "pins_arduino.h"
+		#include "wiring_private.h"
+	#endif
 #endif
 
 #include "LiquidCrystalNew.h"
 
-#if defined(__FASTSWRITE2__)	
-#include "_utility/DigitalIO/DigitalPin.h"
-#endif
 
 #ifndef _LCDGPIOPINCONFIG_H_
 	#include "_configurations/pin_config_dummy.h"
-	//#error you should include a configuration file!!!
 #endif
+
 
 //2 chip
 LiquidCrystalNew::LiquidCrystalNew(const byte rs,const byte en1,const byte en2,const byte d0,const byte d1,const byte d2,const byte d3,const byte bk){
@@ -39,7 +44,7 @@ void LiquidCrystalNew::init(const byte rs,const byte en1,const byte en2,const by
 	_en1 = en1;
 	_en2 = en2;
 	_rs_pin = rs;
-	if (bk != d0 && bk != d1 && bk != d2 && bk != d3 && bk != en1 && bk != rs && bk != 255) {
+	if (bk != 255) {
 		_backlightPin = bk;
 	} else {
 		_backlightPin = 255;
@@ -69,50 +74,51 @@ void LiquidCrystalNew::init(const byte rs,const byte en1,const byte en2,const by
 
 	
 void LiquidCrystalNew::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
-	
-	#if defined(__FASTSWRITE2__)	
-		fastPinMode(_data_pins[0], OUTPUT);
-		fastPinMode(_data_pins[1], OUTPUT);
-		fastPinMode(_data_pins[2], OUTPUT);
-		fastPinMode(_data_pins[3], OUTPUT);
-		fastPinMode(_data_pins[0], OUTPUT);
-		fastPinMode(_en1, OUTPUT);
-		fastPinMode(_rs_pin, OUTPUT);
-		fastDigitalWrite(_en1, LOW);
-	#else	
 		byte i;
 		for (i=0;i<4;i++){
 			pinMode(_data_pins[i],OUTPUT);
 		}
 		pinMode(_rs_pin,OUTPUT);
 		pinMode(_en1,OUTPUT);
+	#if defined(__FASTSWRITE2__)	
+			d0port = digitalPinToPort(_data_pins[0]);
+			d0pin = digitalPinToBitMask(_data_pins[0]);
+			d1port = digitalPinToPort(_data_pins[1]);
+			d1pin = digitalPinToBitMask(_data_pins[1]);
+			d2port = digitalPinToPort(_data_pins[2]);
+			d2pin = digitalPinToBitMask(_data_pins[2]);
+			d3port = digitalPinToPort(_data_pins[3]);
+			d3pin = digitalPinToBitMask(_data_pins[3]);
+			en1port = digitalPinToPort(_en1);
+			en1pin = digitalPinToBitMask(_en1);
+			rsport = digitalPinToPort(_rs_pin);
+			rspin = digitalPinToBitMask(_rs_pin);
+		
+			*portOutputRegister(en1port) &= ~ en1pin;//low
+	#else	
 		digitalWrite(_en1, LOW);
 	#endif
 	
 	if (_multipleChip) {
+		pinMode(_en2,OUTPUT);  //4X40 LCD
 		#if defined(__FASTSWRITE2__)
-			fastPinMode(_en2, OUTPUT);	
-			fastDigitalWrite(_en2, LOW);			
+			en2port = digitalPinToPort(_en2);
+			en2pin = digitalPinToBitMask(_en2);		
+			*portOutputRegister(en2port) &= ~ en2pin;//low		
 		#else
-			pinMode(_en2,OUTPUT);  //4X40 LCD
 			digitalWrite(_en2, LOW);
 		#endif
 	}
 	
 	if (_backlightPin != 255){
-		#if defined(__FASTSWRITE2__)	
-			fastPinMode(_backlightPin, OUTPUT);
-			fastDigitalWrite(_backlightPin, _backLight);
-		#else
-			pinMode(_backlightPin,OUTPUT);
-			digitalWrite(_backlightPin,_backLight);
-		#endif
+		pinMode(_backlightPin,OUTPUT);
+		digitalWrite(_backlightPin,_backLight);
 	}
 	#if defined(__FASTSWRITE2__)
-		fastDigitalWrite(_data_pins[0], LOW);
-		fastDigitalWrite(_data_pins[1], LOW);
-		fastDigitalWrite(_data_pins[2], LOW);
-		fastDigitalWrite(_data_pins[3], LOW);
+		*portOutputRegister(d0port) &= ~ d0pin;//low
+		*portOutputRegister(d1port) &= ~ d1pin;//low
+		*portOutputRegister(d2port) &= ~ d2pin;//low
+		*portOutputRegister(d3port) &= ~ d3pin;//low
 	#else
 		for (i=0;i<4;i++){
 			digitalWrite(_data_pins[i],LOW);
@@ -172,23 +178,51 @@ void LiquidCrystalNew::initChip(uint8_t dotsize, byte enPin) {
 // write either command or data, with automatic 4/8-bit selection
 void LiquidCrystalNew::send(uint8_t value, byte mode) {
 	byte en = _en1;
-	byte testChip = getChip();
-	if (_multipleChip && testChip) en = _en2;
+	if (_multipleChip && getChip()) en = _en2;
 	//delayMicroseconds(DELAYPERCHAR);
-	//nop;
 	setDataMode(mode);	
 	#if defined(__FASTSWRITE2__)
-		fastDigitalWrite(_data_pins[0],value & 0x10);
-		fastDigitalWrite(_data_pins[1],value & 0x20);
-		fastDigitalWrite(_data_pins[2],value & 0x40);
-		fastDigitalWrite(_data_pins[3],value & 0x80);
-		
+		if (value & 0x10){
+			*portOutputRegister(d0port) |= d0pin;//hi
+		} else {
+			*portOutputRegister(d0port) &= ~ d0pin;//low
+		}
+		if (value & 0x20){
+			*portOutputRegister(d1port) |= d1pin;//hi
+		} else {
+			*portOutputRegister(d1port) &= ~ d1pin;//low
+		}
+		if (value & 0x40){
+			*portOutputRegister(d2port) |= d2pin;//hi
+		} else {
+			*portOutputRegister(d2port) &= ~ d2pin;//low
+		}
+		if (value & 0x80){
+			*portOutputRegister(d3port) |= d3pin;//hi
+		} else {
+			*portOutputRegister(d3port) &= ~ d3pin;//low
+		}
 		pulseEnable(en);
-		
-		fastDigitalWrite(_data_pins[0],value & 0x01);
-		fastDigitalWrite(_data_pins[1],value & 0x02);
-		fastDigitalWrite(_data_pins[2],value & 0x04);
-		fastDigitalWrite(_data_pins[3],value & 0x08);
+		if (value & 0x01){
+			*portOutputRegister(d0port) |= d0pin;//hi
+		} else {
+			*portOutputRegister(d0port) &= ~ d0pin;//low
+		}
+		if (value & 0x02){
+			*portOutputRegister(d1port) |= d1pin;//hi
+		} else {
+			*portOutputRegister(d1port) &= ~ d1pin;//low
+		}
+		if (value & 0x04){
+			*portOutputRegister(d2port) |= d2pin;//hi
+		} else {
+			*portOutputRegister(d2port) &= ~ d2pin;//low
+		}
+		if (value & 0x08){
+			*portOutputRegister(d3port) |= d3pin;//hi
+		} else {
+			*portOutputRegister(d3port) &= ~ d3pin;//low
+		}
 	#elif defined(__FASTSWRITE__)	
 		digitalWriteFast(_data_pins[0],value & 0x10);
 		digitalWriteFast(_data_pins[1],value & 0x20);
@@ -218,19 +252,34 @@ void LiquidCrystalNew::send(uint8_t value, byte mode) {
 	}
 
 void LiquidCrystalNew::write4bits(byte value) {  //still used during init
-    
+    #if !defined(__FASTSWRITE2__)
+		byte *pinptr = _data_pins;
+	#endif
 	register byte v = value;
-
-	byte *pinptr = _data_pins;
-    byte testChip = getChip();
 	byte en = _en1;
  // 4x40 LCD with 2 controller chips with separate enable lines if we called w 2 enable pins and are on lines 2 or 3 enable chip 2  
-	if (_multipleChip && testChip) en = _en2; 
+	if (_multipleChip && getChip()) en = _en2; 
 	#if defined(__FASTSWRITE2__)
-		fastDigitalWrite(*pinptr++,v & 01);
-		fastDigitalWrite(*pinptr++,(v >>= 1) & 01);
-		fastDigitalWrite(*pinptr++,(v >>= 1) & 01);
-		fastDigitalWrite(*pinptr++,(v >>= 1) & 01);
+		if (v & 01){
+			*portOutputRegister(d0port) |= d0pin;//hi
+		} else {
+			*portOutputRegister(d0port) &= ~ d0pin;//low
+		}
+		if ((v >>= 1) & 01){
+			*portOutputRegister(d1port) |= d1pin;//hi
+		} else {
+			*portOutputRegister(d1port) &= ~ d1pin;//low
+		}
+		if ((v >>= 1) & 01){
+			*portOutputRegister(d2port) |= d2pin;//hi
+		} else {
+			*portOutputRegister(d2port) &= ~ d2pin;//low
+		}
+		if ((v >>= 1) & 01){
+			*portOutputRegister(d3port) |= d3pin;//hi
+		} else {
+			*portOutputRegister(d3port) &= ~ d3pin;//low
+		}
 	#elif defined(__FASTSWRITE__)	
 		digitalWriteFast(*pinptr++,v & 01);
 		digitalWriteFast(*pinptr++,(v >>= 1) & 01);
@@ -249,7 +298,11 @@ void LiquidCrystalNew::write4bits(byte value) {  //still used during init
 //Set data mode, want send data or command?  0:COMMAND -- 1:DATA
 void LiquidCrystalNew::setDataMode(byte mode) {
 	#if defined(__FASTSWRITE2__)
-		fastDigitalWrite(_rs_pin,mode);
+		if (mode){
+			*portOutputRegister(rsport) |= rspin;//hi
+		} else {
+			*portOutputRegister(rsport) &= ~ rspin;//low
+		}
 	#elif defined (__FASTSWRITE__)
 		digitalWriteFast(_rs_pin,mode);
 	#else
@@ -259,18 +312,22 @@ void LiquidCrystalNew::setDataMode(byte mode) {
 
 void LiquidCrystalNew::pulseEnable(byte enPin) {
 	#if defined(__FASTSWRITE2__)
-		fastDigitalWrite(enPin,HIGH);   // enable pulse must be >450ns
-		nop;nop;nop;nop;nop;nop;nop;nop; //>450ns in theory?!?!
-		fastDigitalWrite(enPin,LOW);
+		*portOutputRegister(en1port) |= en1pin;//hi
+		DelayNanoseconds(420);
+		*portOutputRegister(en1port) &= ~ en1port;//low
+		delayMicroseconds(25);
 	#elif defined (__FASTSWRITE__)
 		digitalWriteFast(enPin,HIGH);   // enable pulse must be >450ns
-		nop;nop;nop;nop;nop;nop;nop;nop; //>450ns in theory?!?!
+		DelayNanoseconds(420);
 		digitalWriteFast(enPin,LOW);
 	#else
 		digitalWrite(enPin,HIGH);   // enable pulse must be >450ns
 		digitalWrite(enPin,LOW);
 	#endif
 	HD44780DLY_OUT();
+	#if defined(__TEENSY3X__)
+	delayMicroseconds(15);
+	#endif
 }
 
 void LiquidCrystalNew::on(void) {
@@ -289,13 +346,6 @@ void LiquidCrystalNew::backlight(byte val){
 #else
 	_backLight = val;
 #endif
-	if (_backlightPin != 255){
-	#if defined(__FASTSWRITE2__)
-		fastDigitalWrite(_backlightPin,_backLight);  
-	#elif defined(__FASTSWRITE__)
-		digitalWriteFast(_backlightPin,_backLight);   
-	#else
-		digitalWrite(_backlightPin,_backLight);   
-	#endif
-	}
+	if (_backlightPin != 255) digitalWrite(_backlightPin,_backLight);   
 }
+

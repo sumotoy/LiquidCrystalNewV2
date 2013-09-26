@@ -27,7 +27,7 @@
 	#define __SANGUINOX__
 	#define __FASTSWRITE2__
 #elif defined(__AVR_ATmega8__) //oldboy...
-	#define __FASTSWRITE2__
+	//#define __FASTSWRITE2__
 #elif defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
 	#define __ATTYNIX__
 #elif (defined(__AVR_ATmega1280__) || defined(__AVR_ATmega1281__) || defined(__AVR_ATmega2560__) || defined(__AVR_ATmega2561__))

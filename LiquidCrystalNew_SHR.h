@@ -3,7 +3,6 @@
 
 #include <inttypes.h>
 
-//#include "___SPI_IO.h"// SPI hardware methods
 #include "HD44780.h"
 /*
 Created by Max MC Costa for sumotoy,(sumotoy@gmail.com)
@@ -13,7 +12,7 @@ Created by Max MC Costa for sumotoy,(sumotoy@gmail.com)
 	are different you can include in the sketch BEFORE includes your personalized configuration file (take a look inside
 	_configurations folder)
 */
-//#include "_configurations/gpio_config_74XX595.h"	// GPIO pin configuration, how the GPIO is connected to LCD		
+
 
 class LiquidCrystalNew_SHR : public HD44780
 {

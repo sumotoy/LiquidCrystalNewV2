@@ -4,6 +4,26 @@
 
 #define iLCD		// turn on code to calculate speed of "independent" sized display
 
+#include <LiquidCrystalNew.h>   // import library
+
+/* -------------- parameters -------------------------
+This is the instance for 2 x HD44780 chip
+rs_pin,enable1_pin,enable2_pin,d4_pin,d5_pin,d6_pin,d7_pin,backlight_pin
+*/
+LiquidCrystalNew lcd(2,3,5,6,7,8,255);
+
+/* -------------- parameters -------------------------
+This is the instance for 1 x HD44780 chip
+rs_pin,enable1_pin,d4_pin,d5_pin,d6_pin,d7_pin,backlight_pin
+*/
+//LiquidCrystalNew lcd(3,4,6,7,8,9,10);	// create the instance
+
+/* -------------- DFrobot  -------------------------
+This is the instance for 1 x HD44780 chip
+rs_pin,enable1_pin,d4_pin,d5_pin,d6_pin,d7_pin,backlight_pin
+*/
+//LiquidCrystalNew lcd(8,9,4,5,6,7,255);//DFRobot shield v1
+
 #define LCD_COLS 20
 #define LCD_ROWS 2
 
@@ -20,18 +40,6 @@
 
 #define DELAY_TIME 3500 // delay time to see information on lcd
 
-#include <LiquidCrystalNew.h>   // import library
-/* -------------- parameters -------------------------
-This is the instance for 2 x HD44780 chip
-rs_pin,enable1_pin,enable2_pin,d4_pin,d5_pin,d6_pin,d7_pin,backlight_pin
-*/
-LiquidCrystalNew lcd(3,4,5,6,7,8,9,10);	// create the instance
-
-/* -------------- parameters -------------------------
-This is the instance for 1 x HD44780 chip
-rs_pin,enable1_pin,d4_pin,d5_pin,d6_pin,d7_pin,backlight_pin
-*/
-//LiquidCrystalNew lcd(3,4,6,7,8,9,10);	// create the instance
 
 #ifdef __AVR__
 extern unsigned int __bss_end;

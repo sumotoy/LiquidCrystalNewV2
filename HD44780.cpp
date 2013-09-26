@@ -20,7 +20,7 @@ HD44780::HD44780 ()
 	_y = 0;
 	_setCursFlag = 0;
 	_backLight = 0; 
-	_scrollOn = 0;//autoscroll not active
+	_scrollOn = 0; 
 }
 
 

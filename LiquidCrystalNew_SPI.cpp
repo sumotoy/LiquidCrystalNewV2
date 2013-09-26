@@ -1,20 +1,25 @@
 #include <stdio.h>
-#include <string.h>
+
 #include <inttypes.h>
 #if (ARDUINO <  100)
 	#include <WProgram.h>
+	#if defined(__FASTSWRITE2__)	
+		#include "pins_arduino.h"
+		#include "wiring.h"
+	#endif
 #else
 	#include <Arduino.h>
+	#if defined(__FASTSWRITE2__)	
+		#include "pins_arduino.h"
+		#include "wiring_private.h"
+	#endif
 #endif
 
 #include "LiquidCrystalNew_SPI.h"
 
 #include <../SPI/SPI.h>
 
-#if defined(__FASTSWRITE2__)	
-#include "pins_arduino.h"
-#include "wiring_private.h"
-#endif
+
 
 #if !defined(_LCDGPIOPINCONFIG_H_)
 	#include "_configurations/pin_config_default.h"
@@ -62,15 +67,6 @@ void LiquidCrystalNew_SPI::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 if (!_avoidInit){
 	SPI.begin();
 	#if defined(__TEENSY3X__)
-/*
-SPI_CLOCK_DIV2    //24.0 MHz ----> ???
-SPI_CLOCK_DIV4    //12.0 MHz ----> ok
-SPI_CLOCK_DIV8    //05.3 MHz ----> ok
-SPI_CLOCK_DIV16   //03.0 MHz ----> ok 48Mhz/96Mhz
-SPI_CLOCK_DIV32   //01.5 MHz ----> ok
-SPI_CLOCK_DIV64   //750 KHz
-SPI_CLOCK_DIV128  //375 Khz
-*/
 	SPI.setClockDivider(SPI_CLOCK_DIV4); // 4 MHz (half speed)
 	SPI.setBitOrder(MSBFIRST);
 	SPI.setDataMode(SPI_MODE0);
@@ -97,7 +93,6 @@ SPI_CLOCK_DIV8
 #else
 	digitalWrite(_cs, HIGH);
 #endif
-
 	delay(100);
 // ---- now prepare GPIO chip and initialize it
 	if (_adrs > 0 && _adrs < 255){
@@ -134,11 +129,7 @@ void LiquidCrystalNew_SPI::initChip(uint8_t dotsize, byte witchEnablePin) {
 	for (i=0;i<18;i++) {
 		delayMicroseconds(LCD_STARTUP_DLY);
 	}
-	// Now we pull both RS and R/W low to begin commands
-	//digitalWrite(_rs_pin, LOW);
 	_setDataMode(0);//COMMAND MODE
-	//digitalWrite(witchEnablePin, LOW);
-	//writeGpio(_theData & ~witchEnablePin);  // En LOW---------------------------------------*/
 	write4bits(0x03);
 	delayMicroseconds(5000); // I have one LCD for which 4500 here was not long enough.
 	// second try
@@ -161,7 +152,6 @@ void LiquidCrystalNew_SPI::initChip(uint8_t dotsize, byte witchEnablePin) {
 	_displaymode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
 	// set the entry mode
 	command(LCD_ENTRYMODESET | _displaymode);	
-	//writeGpio(_theData | witchEnablePin);   // En HIGH ---------------------------------
 	noAutoscroll();
 }
 
@@ -169,29 +159,30 @@ void LiquidCrystalNew_SPI::initChip(uint8_t dotsize, byte witchEnablePin) {
 // write either command or data, with automatic 4/8-bit selection
 void LiquidCrystalNew_SPI::send(uint8_t value, byte mode) {
 	byte en = _en1;
-	byte testChip = getChip();
-	if (_multipleChip && testChip) en = _en2;
-	_setDataMode(mode);					// I2C & SPI
-  		bitWrite(_theData,LCDPIN_D4,value & 0x10);
+	if (_multipleChip && getChip()) en = _en2;
+	_setDataMode(mode);
+   		bitWrite(_theData,LCDPIN_D4,value & 0x10);
 		bitWrite(_theData,LCDPIN_D5,value & 0x20);
 		bitWrite(_theData,LCDPIN_D6,value & 0x40);
-		bitWrite(_theData,LCDPIN_D7,value & 0x80);
- 		pulseEnable(en); 
-		bitWrite(_theData,LCDPIN_D4,value & 0x01);
+		bitWrite(_theData,LCDPIN_D7,value & 0x80); 
+ 	pulseEnable(en); 
+ 		bitWrite(_theData,LCDPIN_D4,value & 0x01);
 		bitWrite(_theData,LCDPIN_D5,value & 0x02);
 		bitWrite(_theData,LCDPIN_D6,value & 0x04);
-		bitWrite(_theData,LCDPIN_D7,value & 0x08); 
- 
+		bitWrite(_theData,LCDPIN_D7,value & 0x08);  
 		bitWrite(_theData,LCDPIN_LD,_backLight);//Background led
+		
 	pulseEnable(en);
-	}
+}
+
+
+
 
 void LiquidCrystalNew_SPI::write4bits(byte value) {  //still used during init
 	register byte v = value;
 	byte en = _en1;
-	byte testChip = getChip();
  // 4x40 LCD with 2 controller chips with separate enable lines if we called w 2 enable pins and are on lines 2 or 3 enable chip 2  
-	if (_multipleChip && testChip) en = _en2;   
+	if (_multipleChip && getChip()) en = _en2;
 		bitWrite(_theData,LCDPIN_D4,v & 01);
 		bitWrite(_theData,LCDPIN_D5,(v >>= 1) & 01);
 		bitWrite(_theData,LCDPIN_D6,(v >>= 1) & 01);
@@ -217,10 +208,22 @@ void LiquidCrystalNew_SPI::_setDataMode(byte mode) {
 }
 
 void LiquidCrystalNew_SPI::pulseEnable(byte witchEnablePin) {
-	writeGpio(_theData | witchEnablePin);   // En HIGH
-	nop;nop;nop;nop;nop;nop;nop;nop;
-	writeGpio(_theData & ~witchEnablePin);  // En LOW
-	HD44780DLY_OUT();// in theory (datasheet on hand) commands need > 37us
+/* 	if (_multipleChip) {
+		if (!getChip()){
+			writeGpio(_theData & ~_en2);  // En LOW
+		} else {
+			writeGpio(_theData & ~_en1);  // En LOW
+		}
+		writeGpio(_theData | witchEnablePin);   // En HIGH
+		DelayNanoseconds(420);
+		writeGpio(_theData & ~witchEnablePin);  // En LOW
+		HD44780DLY_OUT();// in theory (datasheet on hand) commands need > 37us
+	} else { */
+		writeGpio(_theData | witchEnablePin);   // En HIGH
+		DelayNanoseconds(420);
+		writeGpio(_theData & ~witchEnablePin);  // En LOW
+		HD44780DLY_OUT();// in theory (datasheet on hand) commands need > 37us
+/* 	} */
 }
 
 

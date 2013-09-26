@@ -11,6 +11,7 @@ LiquidCrystalNew_TWI	KEYWORD1
 LiquidCrystalNew_SPI	KEYWORD1
 LiquidCrystalNew_SSPI	KEYWORD1
 LiquidCrystalNew_SHR	KEYWORD1
+LiquidCrystalNew_T3TWI	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)

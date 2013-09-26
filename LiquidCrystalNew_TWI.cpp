@@ -56,9 +56,7 @@ void LiquidCrystalNew_TWI::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 	
 	TWBR = 12;
 	delay(100);
-	if (_chipType == 0){//MCP23008
-		writeByte(0x05,0b00100000);//use dedicated cs
-	}
+	if (!_chipType) writeByte(0x05,0b00100000);//use dedicated cs //MCP23008
 	writeByte(0x00,0x00);//set as out (IODIR)
 	writeByte(0x09,0b00000000);//write all low to GPIO
 
@@ -89,10 +87,7 @@ void LiquidCrystalNew_TWI::initChip(uint8_t dotsize, byte witchEnablePin) {
 		delayMicroseconds(LCD_STARTUP_DLY);
 	}
 
-	// Now we pull both RS and R/W low to begin commands
-	//digitalWrite(_rs_pin, LOW);
 	setDataMode(0);//COMMAND MODE
-	//digitalWrite(witchEnablePin, LOW);
 	writeGpio(_theData & ~witchEnablePin);  // En LOW---------------------------------------*/
 	write4bits(0x03);
 	delayMicroseconds(5000); // I have one LCD for which 4500 here was not long enough.
@@ -116,7 +111,6 @@ void LiquidCrystalNew_TWI::initChip(uint8_t dotsize, byte witchEnablePin) {
 	_displaymode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
 	// set the entry mode
 	command(LCD_ENTRYMODESET | _displaymode);	
-	//writeGpio(_theData | witchEnablePin);   // En HIGH ---------------------------------
 	noAutoscroll();
 }
 
@@ -134,9 +128,9 @@ void LiquidCrystalNew_TWI::off(void) {
 // write either command or data, with automatic 4/8-bit selection
 void LiquidCrystalNew_TWI::send(uint8_t value, byte mode) {
 	byte en = _en1;
-	byte testChip = getChip();
-	if (_multipleChip && testChip) en = _en2;
-	//delayMicroseconds(DELAYPERCHAR);
+	if (_multipleChip){
+		if (getChip()) en = _en2;
+	}	
 	setDataMode(mode);					// I2C & SPI
 		bitWrite(_theData,LCDPIN_D4,value & 0x10);
 		bitWrite(_theData,LCDPIN_D5,value & 0x20);
@@ -155,9 +149,9 @@ void LiquidCrystalNew_TWI::send(uint8_t value, byte mode) {
 void LiquidCrystalNew_TWI::write4bits(byte value) {  //still used during init
 	register byte v = value;
 	byte en = _en1;
-	byte testChip = getChip();
- // 4x40 LCD with 2 controller chips with separate enable lines if we called w 2 enable pins and are on lines 2 or 3 enable chip 2  
-	if (_multipleChip && testChip) en = _en2;   
+	if (_multipleChip){
+		if (getChip()) en = _en2;
+	}	
 		bitWrite(_theData,LCDPIN_D4,v & 01);
 		bitWrite(_theData,LCDPIN_D5,(v >>= 1) & 01);
 		bitWrite(_theData,LCDPIN_D6,(v >>= 1) & 01);
@@ -200,10 +194,10 @@ void LiquidCrystalNew_TWI::backlight(byte val){
 void LiquidCrystalNew_TWI::writeByte(byte cmd,byte value){
 	Wire.beginTransmission(_adrs);
 #if ARDUINO >= 100
-	if (_chipType == 0) Wire.write(cmd);
+	if (!_chipType) Wire.write(cmd);
 	Wire.write(value);
 #else
-	if (_chipType == 0) Wire.send(cmd);
+	if (!_chipType) Wire.send(cmd);
 	Wire.send(value);
 #endif
 	Wire.endTransmission();

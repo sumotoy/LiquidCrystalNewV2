@@ -1,22 +1,13 @@
 #include <stdio.h>
-
+#include <string.h>
 #include <inttypes.h>
 #if (ARDUINO <  100)
 	#include <WProgram.h>
-	#if defined(__FASTSWRITE2__)	
-		#include "pins_arduino.h"
-		#include "wiring.h"
-	#endif
 #else
 	#include <Arduino.h>
-	#if defined(__FASTSWRITE2__)	
-		#include "pins_arduino.h"
-		#include "wiring_private.h"
-	#endif
 #endif
 
 
-#include "LiquidCrystalNew_SHR.h"
 
 
 #if !defined(_LCDGPIOPINCONFIG_H_)
@@ -24,8 +15,22 @@
 	//#error you should include a configuration file!!!
 #endif
 
-//1/2 chip with a 595 shift register GPIO (3 wire)
-LiquidCrystalNew_SHR::LiquidCrystalNew_SHR(const byte clk,const byte data,const byte strobe,const byte chip){
+#include "LiquidCrystalNew_T3TWI.h"
+
+#if defined(__TEENSY3X__)
+	#include <../i2c_t3/i2c_t3.h>
+#else
+	#include <../Wire/Wire.h>
+#endif
+
+//1/2 chip with software SPI GPIO (3 wire)
+LiquidCrystalNew_T3TWI::LiquidCrystalNew_T3TWI(const byte adrs,byte pins,byte pullup,byte rate,const byte chip,const byte chipType){
+	if (pins > 1) pins = 0;
+	if (pullup > 1) pullup = 0;
+	if (rate > 10) rate = 0;
+	_pins = pins;
+	_pullup = pullup;
+	_rate = rate;
 	if (chip == 0 || chip == 255){
 		_en2 = 255;
 		_multipleChip = 0;
@@ -33,17 +38,17 @@ LiquidCrystalNew_SHR::LiquidCrystalNew_SHR(const byte clk,const byte data,const 
 		_en2 = (1 << LCDPIN_EN2);
 		_multipleChip = 1;
 	}
-	_clk = clk;
-	_dta = data;
-	_stb = strobe;
 	_en1 = (1 << LCDPIN_EN);
+	_adrs = adrs;
+	_chipType = chipType;
+	if ((chipType == PCF8574A) && (adrs < 0x38)) _adrs = 0x38;
 	_scroll_count = 0;      //to fix the bug if we scroll and then setCursor w/o home() or clear()
 	_x = 0;
 	_y = 0;
 	_setCursFlag = 0;
 	_direction = LCD_Right;
 	setChip(0);
-#if defined(BACKGND_LGHTINV)
+#ifdef BACKGND_LGHTINV
 	_backLight = 0;
 #else
 	_backLight = 1;
@@ -58,26 +63,25 @@ LiquidCrystalNew_SHR::LiquidCrystalNew_SHR(const byte clk,const byte data,const 
 }
 
 
-void LiquidCrystalNew_SHR::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
-		pinMode(_clk,OUTPUT);
-		pinMode(_dta,OUTPUT);
-		pinMode(_stb,OUTPUT);
-	#if defined(__FASTSWRITE2__)
-		sclkport = digitalPinToPort(_clk);
-        sclkpin = digitalPinToBitMask(_clk);
-		dtaport = digitalPinToPort(_dta);
-        dtapin = digitalPinToBitMask(_dta);
-		stbport = digitalPinToPort(_stb);
-        stbpin = digitalPinToBitMask(_stb);
-		*portOutputRegister(stbport) |= stbpin;//hi
-		*portOutputRegister(sclkport) &= ~ sclkpin;//low
+
+void LiquidCrystalNew_T3TWI::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
+	#if defined(__TEENSY3X__)
+		const i2c_pins temp3[2] = {I2C_PINS_18_19,I2C_PINS_16_17};
+		const i2c_pullup temp4[2] = {I2C_PULLUP_EXT,I2C_PULLUP_INT};
+		const i2c_rate temp5[11] = {I2C_RATE_100,I2C_RATE_200,I2C_RATE_300,I2C_RATE_400,I2C_RATE_600,I2C_RATE_800,I2C_RATE_1000,I2C_RATE_1200,I2C_RATE_1500,I2C_RATE_2000,I2C_RATE_2400};
+		Wire.begin(I2C_MASTER,0x00,temp3[_pins],temp4[_pullup],temp5[_rate]);
 	#else
-		digitalWrite(_stb,HIGH);
-		digitalWrite(_clk,LOW);
+		Wire.begin();
+		TWBR = 12;
 	#endif
+	delay(100);
+	if (!_chipType) writeByte(0x05,0b00100000);//use dedicated cs //MCP23008
+	writeByte(0x00,0x00);//set as out (IODIR)
+	writeByte(0x09,0b00000000);//write all low to GPIO
+
 	_lcd_cols = cols;    //there is an implied lack of trust; the private version can't be munged up by the user.
 	_lcd_lines = lines;
-	_row_offsets[2] = _lcd_cols + _row_offsets[0];  //should auto-adjust for 16/20 or whatever columns now
+	_row_offsets[2] = _lcd_cols + _row_offsets[0];  //should autoadjust for 16/20 or whatever columns now
 	_row_offsets[3] = _lcd_cols + _row_offsets[1];
 	initChip(dotsize,_en1);
 	//manage second chip if exists
@@ -91,7 +95,7 @@ void LiquidCrystalNew_SHR::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 
 
 
-void LiquidCrystalNew_SHR::initChip(uint8_t dotsize, byte witchEnablePin) {  
+void LiquidCrystalNew_T3TWI::initChip(uint8_t dotsize, byte witchEnablePin) {  
 	byte	displayfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS;
 	byte i;
 	if (_lcd_lines > 1) displayfunction |= LCD_2LINE;
@@ -101,6 +105,7 @@ void LiquidCrystalNew_SHR::initChip(uint8_t dotsize, byte witchEnablePin) {
 	for (i=0;i<18;i++) {
 		delayMicroseconds(LCD_STARTUP_DLY);
 	}
+
 	setDataMode(0);//COMMAND MODE
 	writeGpio(_theData & ~witchEnablePin);  // En LOW---------------------------------------*/
 	write4bits(0x03);
@@ -128,26 +133,29 @@ void LiquidCrystalNew_SHR::initChip(uint8_t dotsize, byte witchEnablePin) {
 	noAutoscroll();
 }
 
-void LiquidCrystalNew_SHR::on(void) {
+
+void LiquidCrystalNew_T3TWI::on(void) {
 	display();
 	backlight(1);
 }
 
-void LiquidCrystalNew_SHR::off(void) {
+void LiquidCrystalNew_T3TWI::off(void) {
 	noDisplay();
 	backlight(0);
 }
 
 // write either command or data, with automatic 4/8-bit selection
-void LiquidCrystalNew_SHR::send(uint8_t value, byte mode) {
+void LiquidCrystalNew_T3TWI::send(uint8_t value, byte mode) {
 	byte en = _en1;
-	if (_multipleChip && getChip()) en = _en2;
+	if (_multipleChip){
+		if (getChip()) en = _en2;
+	}	
 	setDataMode(mode);					// I2C & SPI
 		bitWrite(_theData,LCDPIN_D4,value & 0x10);
 		bitWrite(_theData,LCDPIN_D5,value & 0x20);
 		bitWrite(_theData,LCDPIN_D6,value & 0x40);
 		bitWrite(_theData,LCDPIN_D7,value & 0x80);
-	pulseEnable(en);
+		pulseEnable(en);
 		bitWrite(_theData,LCDPIN_D4,value & 0x01);
 		bitWrite(_theData,LCDPIN_D5,value & 0x02);
 		bitWrite(_theData,LCDPIN_D6,value & 0x04);
@@ -155,13 +163,14 @@ void LiquidCrystalNew_SHR::send(uint8_t value, byte mode) {
 
 		bitWrite(_theData,LCDPIN_LD,_backLight);//Background led
 	pulseEnable(en);
-	}
+}
 
-void LiquidCrystalNew_SHR::write4bits(byte value) {  //still used during init
+void LiquidCrystalNew_T3TWI::write4bits(byte value) {  //still used during init
 	register byte v = value;
 	byte en = _en1;
- // 4x40 LCD with 2 controller chips with separate enable lines if we called w 2 enable pins and are on lines 2 or 3 enable chip 2  
-	if (_multipleChip && getChip()) en = _en2;   
+	if (_multipleChip){
+		if (getChip()) en = _en2;
+	}	
 		bitWrite(_theData,LCDPIN_D4,v & 01);
 		bitWrite(_theData,LCDPIN_D5,(v >>= 1) & 01);
 		bitWrite(_theData,LCDPIN_D6,(v >>= 1) & 01);
@@ -171,72 +180,44 @@ void LiquidCrystalNew_SHR::write4bits(byte value) {  //still used during init
 
 
 //Set data mode, want send data or command?  0:COMMAND -- 1:DATA
-void LiquidCrystalNew_SHR::setDataMode(byte mode) {
+void LiquidCrystalNew_T3TWI::setDataMode(byte mode) {
 	bitWrite(_theData,LCDPIN_RS,mode);
 }
 
-void LiquidCrystalNew_SHR::pulseEnable(byte witchEnablePin) {
+void LiquidCrystalNew_T3TWI::pulseEnable(byte witchEnablePin) {
 	writeGpio(_theData | witchEnablePin);   // En HIGH
-	DelayNanoseconds(420);
 	writeGpio(_theData & ~witchEnablePin);  // En LOW
-	HD44780DLY_OUT();// in theory (datasheet on hand) commands need > 37us
 }
 
 
-void LiquidCrystalNew_SHR::writeGpio(byte value){
+void LiquidCrystalNew_T3TWI::writeGpio(byte value){
       // Only write HIGH the values of the ports that have been initialised as outputs updating the output shadow of the device
 	_theData = (value & ~(0x00));
-	writeByte(_theData);
+	writeByte(0x09,_theData);
 }
 
 
 
 
-void LiquidCrystalNew_SHR::backlight(byte val){
-#if defined(BACKGND_LGHTINV)
+void LiquidCrystalNew_T3TWI::backlight(byte val){
+#ifdef BACKGND_LGHTINV
 	_backLight = !val;
 #else
 	_backLight = val;
 #endif
 	bitWrite(_theData,LCDPIN_LD,_backLight);
-	writeByte(_theData);
+	writeByte(0x09,_theData);
 }
 
-void LiquidCrystalNew_SHR::writeByte(byte value){
-byte i;
 
-#if defined(__FASTSWRITE__)
-	digitalWriteFast(_stb,LOW);
-#elif defined(__FASTSWRITE2__)
-	*portOutputRegister(stbport) &= ~ stbpin;//low
+void LiquidCrystalNew_T3TWI::writeByte(byte cmd,byte value){
+	Wire.beginTransmission(_adrs);
+#if ARDUINO >= 100
+	if (!_chipType) Wire.write(cmd);
+	Wire.write(value);
 #else
-	digitalWrite(_stb,LOW);
+	if (!_chipType) Wire.send(cmd);
+	Wire.send(value);
 #endif
-	for (i = 0; i < 8; i++)  {
-		#if defined(__FASTSWRITE__)
-		digitalWriteFast(_dta, !!(value & (1 << (7 - i))));
-		digitalWriteFast(_clk, HIGH);
-		digitalWriteFast(_clk, LOW);
-		#elif defined(__FASTSWRITE2__)
-		if (!!(value & (1 << (7 - i)))){
-			*portOutputRegister(dtaport) |= dtapin;//hi
-		} else {
-			*portOutputRegister(dtaport) &= ~ dtapin;//low
-		}
-		*portOutputRegister(sclkport) |= sclkpin;//hi
-		*portOutputRegister(sclkport) &= ~ sclkpin;//low
-		#else
-		digitalWrite(_dta, !!(value & (1 << (7 - i))));
-		digitalWrite(_clk, HIGH);
-		digitalWrite(_clk, LOW);
-		#endif
-	}
-#if defined(__FASTSWRITE__)
-	digitalWriteFast(_stb,HIGH);
-#elif defined(__FASTSWRITE2__)
-	*portOutputRegister(stbport) |= stbpin;//hi
-#else
-	digitalWrite(_stb,HIGH);
-#endif
+	Wire.endTransmission();
 }
-

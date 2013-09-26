@@ -15,7 +15,11 @@
 
 //set timing things
 #define nop asm volatile ("nop\n\t")
-//#define NANOD asm volatile ("nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t")
+#if defined(__AVR__)
+	#define DelayNanoseconds(__ns) __builtin_avr_delay_cycles( (double)(F_CPU)*((double)__ns)/1.0e9 + 0.5 ) 
+#else
+	#define DelayNanoseconds(void) {nop;nop;nop;nop;nop;nop;nop;nop;} 
+#endif
 
 /*
 Created by Max MC Costa for sumotoy,(sumotoy@gmail.com)
@@ -50,62 +54,61 @@ public:
 	void 			noAutoscroll();							//
 	uint8_t			getCursorCol(void);						// NEW
 	uint8_t			getCursorRow(void);						// NEW
-	void 			setCursor(uint8_t col, uint8_t row);			//
+	void 			setCursor(uint8_t col, uint8_t row);	//
 	void 			createChar(uint8_t, uint8_t[]);			//
 #if (ARDUINO <  100)
    virtual void 	write(uint8_t value);
    virtual void 	backlight(byte value) { };				// NEW
-   virtual void 	on() { };
-   virtual void 	off() { };
+   virtual void 	on() { };								// NEW
+   virtual void 	off() { };								// NEW
 #else
    virtual size_t 	write(uint8_t value);
-   virtual void 	backlight(byte value) = 0;	
-   virtual void 	on(void) = 0;
-   virtual void 	off(void) = 0;
+   virtual void 	backlight(byte value) = 0;				// NEW		
+   virtual void 	on(void) = 0;							// NEW
+   virtual void 	off(void) = 0;							// NEW
 #endif
 	using Print::write;
 	
 protected:
 
-	byte 			_en1; 				// activated by a HIGH pulse.
-	byte 			_en2; 				// activated by a HIGH pulse.
-	byte 			_chip;
-	byte			_multipleChip;
+	byte 			_en1; 				
+	byte 			_en2; 				
+	byte 			_chip;				// witch chip is on?
+	byte			_multipleChip;		// 0:one chip / 1:2xchip
 	int8_t 			_scroll_count;
 	int8_t			_x;
 	int8_t			_y;
-	byte 			_lcd_cols;
-	byte 			_lcd_lines;
+	byte 			_lcd_cols;			// LCD width
+	byte 			_lcd_lines;			// LCD height
 	byte 			_setCursFlag;
 	byte 			_direction;
 	byte 			_row_offsets[4];
 	byte 			_displaycontrol;   	// display on/off, cursor on/off, blink on/off
 	byte 			_displaymode;      	// text direction	
 	byte			_backLight;			// 0:off/1:ON
-	byte			_scrollOn;
-	bool			_backlightFlag;
+	byte			_scrollOn;			// 0:off/1:ON
 	inline void 	command(byte value)  {send(value, LOW);}
 	inline void 	commandBoth(byte value)  {if (!_multipleChip) {command(value);}else{byte chipSave = getChip();setChip(0);command(value);setChip(2);command(value);setChip(chipSave);}}
 	inline void		setChip(byte chip){ _chip = chip; }
 	inline byte		getChip(){ return _chip; }
 	//again timing things...
 #if defined(__FASTSWRITE__)
-	inline void		HD44780DLY_OUT() { delayMicroseconds(25); }
+	inline void		HD44780DLY_OUT() { delayMicroseconds(27); }
 #elif defined(__FASTSWRITE2__)
-	inline void		HD44780DLY_OUT() { delayMicroseconds(1); }
+	inline void		HD44780DLY_OUT() { DelayNanoseconds(200);/*delayMicroseconds(1);*/ }
 #else
 	#if defined(__TEENSY3X__)
-	inline void		HD44780DLY_OUT() { delayMicroseconds(25); }
+		inline void		HD44780DLY_OUT() { delayMicroseconds(27); }
 	#else
-	inline void		HD44780DLY_OUT() { nop; }
+		inline void		HD44780DLY_OUT() { nop; }
 	#endif
 #endif
 	
 private:
 #if (ARDUINO <  100)
-	virtual void send(byte value, byte mode) { };
+	virtual void 	send(byte value, byte mode) { };
 #else
-	virtual void send(byte value, byte mode) = 0;
+	virtual void 	send(byte value, byte mode) = 0;
 #endif
 	inline void		delayForHome() {delayMicroseconds(LCD_HOME_DLY);}
 };
