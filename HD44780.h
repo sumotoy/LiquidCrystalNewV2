@@ -95,7 +95,8 @@ protected:
 #if defined(__FASTSWRITE__)
 	inline void		HD44780DLY_OUT() { delayMicroseconds(27); }
 #elif defined(__FASTSWRITE2__)
-	inline void		HD44780DLY_OUT() { DelayNanoseconds(200);/*delayMicroseconds(1);*/ }
+	//inline void		HD44780DLY_OUT() { DelayNanoseconds(400);/*delayMicroseconds(1);*/ }
+	inline void		HD44780DLY_OUT() { delayMicroseconds(5); }//if you see garbage increase this
 #else
 	#if defined(__TEENSY3X__)
 		inline void		HD44780DLY_OUT() { delayMicroseconds(27); }
