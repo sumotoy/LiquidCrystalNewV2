@@ -181,11 +181,14 @@ go back to normal. I will publish a couple of tested easy example circuits when 
  - Beta version of shift register method. (v b0.91) 
  - Cleaned methods, added external config file (usable from sketch). (v b0.94)
  - Usable version. Tested w Arduino & Teensy3. Timings almost 99%ok.Added fast I2C for Teensy3. (v 0.99)<----
+ -  Better timing for AVR and slow displays.
 
 
 <b>Know Bugs:</b>-----------------------------------------------------------------------------------------------------
 
 - A well know one still present only with 2 x HD44780 chips large displays and only related to autoscroll.
+- If you see garbage on screen (even occasionally) <b>you can increase the timing of the inline function called HD44780DLY_OUT()</b>. Modern displays should be faster than datasheet raccomends but I got some slow displays from china recently and had to increase the value. Datasheet raccomands 27 microseconds, actually it's 5, so modify as your needs.
+- The fast port addressing methods are currently <b>NOT interrupt safe</b>, this will be fixed in the release but if you have problems it's pretty easy fix this, just open <b>cpuident.h</b> file and comment out __FASTSWRITE2__ or __FASTSWRITE__ (depending of micro you are using). This will force the library to use digitalWrite stuff.
 
 <b>Speed Test and comparison with other libraries:</b>---------------------------------------------------------------
 
