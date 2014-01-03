@@ -1,38 +1,56 @@
+/*
+	LiquidCrystalNew - An attemp to create a fast and universal library for drive HD44780 LCD's
+	
+	Features:
+	- Can use a GPIO chip (I2C,SR or SPI) to save pins on your microcontroller.
+	- Can drive double HD44780 displays (large ones).
+	- It's faster than canonical one.
+	- Better management of the cursor.
+	
+	Library works only in 4bit mode but can drive 2 x HD44780 LCD's
+	and uses faster digitalWrite routine. It also have some fix that allow
+	correct handle of big screens and better cursor management.
+
+    Copyright (c) 2013, sumotoy, coded by Max MC Costa.    
+
+    LiquidCrystalNew Library is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    LiquidCrystalNew Library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+
+    This file contains high level functions based on ;
+
+    Fast DigitalIO by William Greiman:
+ 
+    liquicrystal440 by John Rain:
+    http://code.google.com/p/liquidcrystal440/
+	
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	Version:0.99b2
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*/
+
+
 #ifndef _LiquidCrystalNew_SPI_h
 #define _LiquidCrystalNew_SPI_h
 
 #include <inttypes.h>
 
-
 #include "HD44780.h"
-/*
-Created by Max MC Costa for sumotoy,(sumotoy@gmail.com)
-Fast DigitalIO by William Greiman
-	This variation of the LiquidCrystalNew allow use the GPIO SPI expander from Microchip
-	MCP23S08 that uses HAEN to share the same CS pin (that in SPI should normally tied to one device only)
-	with a max of 8 chip of the MCP23Sxx series.
-	It has all the fetures of LiquidCrystalNew included 2 x HD44780 handling.
-	If you are using a ready made piggyBack module that uses this chip but connections with LCD
-	are different you can include in the sketch BEFORE includes your personalized configuration file (take a look inside
-	_configurations folder)
-	Example:
-	for use with this product 	http://www.ladyada.net/products/i2cspilcdbackpack/index.html include at the top of your sketch:
-	#include "../LiquidCrystalNew/_configurations/pin_config_ladyada.h"
-	This will override the default config file.
-*/
-	
+
 
 class LiquidCrystalNew_SPI : public HD44780
 {
 public:
-/*
-	LiquidCrystalNew_SPI instantiate
-	(parameters)
-	cs: dedicated cs pin if HAEN off or shared if ON
-	chip: 0=1xHD44780(most lcd's),1=2xHD44780(large 4x40 lcd's)
-	adrs: HAEN address,if not using set to 0 or 255
-	avoidSPIinit: if true you need to init manually SPI in sketch before begin()! useful if you have complicated sketches
-*/
+
 	LiquidCrystalNew_SPI(const byte cs,const byte chip=0,const byte adrs=0x20,const byte avoidSPIinit=0);//use software SPI
 	// classical LCD begin
 	virtual void 		begin(uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS); 
@@ -54,7 +72,7 @@ private:
 	void 				pulseEnable(byte witchEnablePin);					//
 	void 				writeGpio(byte value);								//
 	#if defined(__FASTSWRITE2__)
- 	void inline			sendSPI(byte data){ SPDR = data; while(!(SPSR & _BV(SPIF))); };
+ 	void inline			sendSPI(byte data){ SPDR = data; while(!(SPSR & _BV(SPIF))); };//TODO! This need the ISR protection
 	
 	volatile uint8_t 	csport;
 	uint8_t 			cspin;

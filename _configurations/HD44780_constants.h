@@ -11,6 +11,7 @@ static const unsigned int LCD_HOME_DLY 	=	2900;// max 65535
 /*I don't think I can adequately test this number; it will depend a little on which Arduino or clone you have and probably
  could also vary with the power source applied to that board. The way to test is really to load your program, remove power
  and then reapply power so that the program starts up as power is applied. If anyone finds they need a larger number please
+ let me know.
 */
 
 // commands
@@ -52,5 +53,8 @@ static const byte LCD_5x10DOTS 				=	0x04;
 static const byte LCD_5x8DOTS 				=	0x00;
 static const byte LCD_Right 				=	0;
 static const byte LCD_Left 					=	1;
+
+// additional flag for VFD displays
+static const byte LCD_NORITAKEBRIGHT 	    =	0x28;
 
 #endif

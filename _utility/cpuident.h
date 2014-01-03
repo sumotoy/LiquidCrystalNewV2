@@ -8,7 +8,10 @@
 #define _CPUIDENT_H_
 
 
-#if defined(__arm__) && defined(CORE_TEENSY)																	
+#if defined(__arm__) && defined(CORE_TEENSY) && defined(__MK20DX128__)//3.0													
+	#define __TEENSY3X__
+	#define __FASTSWRITE__
+#elif defined(__MK20DX256__) && defined(__arm__)//3.1
 	#define __TEENSY3X__
 	#define __FASTSWRITE__
 #elif defined(ARDUINO) && defined(__arm__) && !defined(CORE_TEENSY)	//sometime ide makes confusion...											

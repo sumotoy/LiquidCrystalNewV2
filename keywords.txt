@@ -40,6 +40,7 @@ createChar	KEYWORD2
 backlight	KEYWORD2
 on	KEYWORD2
 off	KEYWORD2
+tuneLcdDelay	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

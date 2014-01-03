@@ -21,6 +21,7 @@ HD44780::HD44780 ()
 	_setCursFlag = 0;
 	_backLight = 0; 
 	_scrollOn = 0; 
+    _activeDelay = _defaultDelay;
 }
 
 
@@ -180,6 +181,23 @@ void HD44780::createChar(uint8_t location, uint8_t charmap[]) {
 		setChip(chipSave);
 	}
 }
+
+void HD44780::vfdBrightness(uint8_t val) {
+	if ((val >= 0) && (val < 4)) {
+		commandBoth(LCD_NORITAKEBRIGHT);
+		send(val,HIGH);
+	}
+}
+
+void HD44780::tuneLcdDelay(int val) {
+	if (val == 0){
+		_activeDelay = _defaultDelay;
+	} else {
+		_activeDelay = _defaultDelay + val;
+		if (_activeDelay < 1) _activeDelay = _defaultDelay;
+	}
+}
+
 
 // --------------------------- SPECIAL write belongs to stream.h, need special attention -----------------------------------
 #if (ARDUINO <  100)

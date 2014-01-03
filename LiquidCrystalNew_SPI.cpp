@@ -220,7 +220,7 @@ void LiquidCrystalNew_SPI::pulseEnable(byte witchEnablePin) {
 		HD44780DLY_OUT();// in theory (datasheet on hand) commands need > 37us
 	} else { */
 		writeGpio(_theData | witchEnablePin);   // En HIGH
-		DelayNanoseconds(420);
+		DelayNanoseconds(420);//420
 		writeGpio(_theData & ~witchEnablePin);  // En LOW
 		HD44780DLY_OUT();// in theory (datasheet on hand) commands need > 37us
 /* 	} */
