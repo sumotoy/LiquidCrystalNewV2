@@ -1,17 +1,16 @@
 /*
-	---------- supersilly mcu identifier -------------------------------------------
+	---------- super silly mcu identifier -------------------------------------------
 	Maybe not an example of 'how to do it' but this is very useful to identify MCU's
-	It also define some other vars to semplify calls to different methods
+	It also define some other vars to simplify calls to different methods
 */
 
 #ifndef _CPUIDENT_H_
 #define _CPUIDENT_H_
 
-
 #if defined(__arm__) && defined(CORE_TEENSY) && defined(__MK20DX128__)//3.0													
 	#define __TEENSY3X__
 	#define __FASTSWRITE__
-#elif defined(__MK20DX256__) && defined(__arm__)//3.1
+#elif defined(__arm__) && defined(CORE_TEENSY) && defined(__MK20DX256__)//3.1
 	#define __TEENSY3X__
 	#define __FASTSWRITE__
 #elif defined(ARDUINO) && defined(__arm__) && !defined(CORE_TEENSY)	//sometime ide makes confusion...											
