@@ -87,9 +87,11 @@ SPI_CLOCK_DIV8
 }	
 	pinMode(_cs, OUTPUT); //set data pin modes
 #if defined(__FASTSWRITE2__)
+	noInterrupts();
 	csport = digitalPinToPort(_cs);
     cspin = digitalPinToBitMask(_cs);
 	*portOutputRegister(csport) |= cspin;//hi
+	interrupts();
 #else
 	digitalWrite(_cs, HIGH);
 #endif
@@ -171,7 +173,6 @@ void LiquidCrystalNew_SPI::send(uint8_t value, byte mode) {
 		bitWrite(_theData,LCDPIN_D6,value & 0x04);
 		bitWrite(_theData,LCDPIN_D7,value & 0x08);  
 		bitWrite(_theData,LCDPIN_LD,_backLight);//Background led
-		
 	pulseEnable(en);
 }
 
@@ -250,11 +251,13 @@ void LiquidCrystalNew_SPI::backlight(byte val){
 void LiquidCrystalNew_SPI::writeByte(byte cmd,byte value){
 //start send
 #if defined(__FASTSWRITE2__)
+	noInterrupts();
 	*portOutputRegister(csport) &= ~ cspin;//low
 	sendSPI(_adrs << 1);
 	sendSPI(cmd);
 	sendSPI(value); 
 	*portOutputRegister(csport) |= cspin;//hi
+	interrupts();
 #elif defined(__FASTSWRITE__)
 	digitalWriteFast(_cs, LOW);
 	SPI.transfer(_adrs << 1);

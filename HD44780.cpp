@@ -22,6 +22,7 @@ HD44780::HD44780 ()
 	_backLight = 0; 
 	_scrollOn = 0; 
     _activeDelay = _defaultDelay;
+	_customDelay = 0;
 }
 
 

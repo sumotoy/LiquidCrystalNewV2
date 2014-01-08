@@ -34,7 +34,7 @@
     http://code.google.com/p/liquidcrystal440/
 	
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	Version:0.99b2
+	Version:0.99b7
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 */
 
@@ -133,6 +133,7 @@ protected:
 	inline void		setChip(byte chip){ _chip = chip; }
 	inline byte		getChip(){ return _chip; }
 	uint8_t			_activeDelay;//ADDED 2014
+	uint8_t			_customDelay;
 
 	//again timing things...
 #if defined(__FASTSWRITE__)
