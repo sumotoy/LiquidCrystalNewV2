@@ -1,6 +1,6 @@
 LiquidCrystalNew V2   
 ===================
-<div>Version <b>beta 0.99b6</b> </div>. Finally a beta stage. 
+<div>Version <b>beta 0.99b8</b> </div>. Finally a beta stage. 
 Actually tested and verified all istances with Teensy3.0 - 3.1 (all speed) and Arduino duemilanove,uno,micro,mega and 1284P (using my IDE extension here in my github).
 Double chip HD44780 LCD's tested and verified in all instances.
 Not tested yet with DUE (mine it's actually broken) but looks compile ok so I'm positive about.
