@@ -63,6 +63,7 @@ void LiquidCrystalNew_SHR::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 		pinMode(_dta,OUTPUT);
 		pinMode(_stb,OUTPUT);
 	#if defined(__FASTSWRITE2__)
+		BLOCK_IRQS();
 		sclkport = digitalPinToPort(_clk);
         sclkpin = digitalPinToBitMask(_clk);
 		dtaport = digitalPinToPort(_dta);
@@ -71,6 +72,7 @@ void LiquidCrystalNew_SHR::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
         stbpin = digitalPinToBitMask(_stb);
 		*portOutputRegister(stbport) |= stbpin;//hi
 		*portOutputRegister(sclkport) &= ~ sclkpin;//low
+		ENABLE_IRQS();
 	#else
 		digitalWrite(_stb,HIGH);
 		digitalWrite(_clk,LOW);
@@ -218,6 +220,7 @@ byte i;
 		digitalWriteFast(_clk, HIGH);
 		digitalWriteFast(_clk, LOW);
 		#elif defined(__FASTSWRITE2__)
+		BLOCK_IRQS();
 		if (!!(value & (1 << (7 - i)))){
 			*portOutputRegister(dtaport) |= dtapin;//hi
 		} else {
@@ -225,6 +228,7 @@ byte i;
 		}
 		*portOutputRegister(sclkport) |= sclkpin;//hi
 		*portOutputRegister(sclkport) &= ~ sclkpin;//low
+		ENABLE_IRQS();
 		#else
 		digitalWrite(_dta, !!(value & (1 << (7 - i))));
 		digitalWrite(_clk, HIGH);
@@ -234,7 +238,9 @@ byte i;
 #if defined(__FASTSWRITE__)
 	digitalWriteFast(_stb,HIGH);
 #elif defined(__FASTSWRITE2__)
+	BLOCK_IRQS();
 	*portOutputRegister(stbport) |= stbpin;//hi
+	ENABLE_IRQS();
 #else
 	digitalWrite(_stb,HIGH);
 #endif

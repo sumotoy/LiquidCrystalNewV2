@@ -151,6 +151,14 @@ protected:
 		inline void		HD44780DLY_OUT() { if (_activeDelay == 0){nop;} else {delayMicroseconds(_activeDelay);} }
 	#endif
 #endif
+	//interrupt management
+	#if defined(__TEENSY3X__)
+		inline void		BLOCK_IRQS() { __disable_irq(); }
+		inline void		ENABLE_IRQS() { __enable_irq(); }
+	#else
+		inline void		BLOCK_IRQS() { noInterrupts(); }
+		inline void		ENABLE_IRQS() { interrupts(); }
+	#endif
 	
 private:
 #if (ARDUINO <  100)

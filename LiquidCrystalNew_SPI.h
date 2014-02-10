@@ -72,7 +72,7 @@ private:
 	void 				pulseEnable(byte witchEnablePin);					//
 	void 				writeGpio(byte value);								//
 	#if defined(__FASTSWRITE2__)
- 	void inline			sendSPI(byte data){ SPDR = data; while(!(SPSR & _BV(SPIF))); };//TODO! This need the ISR protection
+ 	void inline			sendSPI(byte data){ BLOCK_IRQS(); SPDR = data; while(!(SPSR & _BV(SPIF))); BLOCK_IRQS(); };
 	
 	volatile uint8_t 	csport;
 	uint8_t 			cspin;

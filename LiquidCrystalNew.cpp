@@ -81,7 +81,7 @@ void LiquidCrystalNew::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 		pinMode(_rs_pin,OUTPUT);
 		pinMode(_en1,OUTPUT);
 	#if defined(__FASTSWRITE2__)	
-			noInterrupts();
+			BLOCK_IRQS();
 			d0port = digitalPinToPort(_data_pins[0]);
 			d0pin = digitalPinToBitMask(_data_pins[0]);
 			d1port = digitalPinToPort(_data_pins[1]);
@@ -96,7 +96,7 @@ void LiquidCrystalNew::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 			rspin = digitalPinToBitMask(_rs_pin);
 		
 			*portOutputRegister(en1port) &= ~ en1pin;//low
-			interrupts();
+			ENABLE_IRQS();
 	#else	
 		digitalWrite(_en1, LOW);
 	#endif
@@ -104,11 +104,11 @@ void LiquidCrystalNew::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 	if (_multipleChip) {
 		pinMode(_en2,OUTPUT);  //4X40 LCD
 		#if defined(__FASTSWRITE2__)
-		noInterrupts();
+		BLOCK_IRQS();
 			en2port = digitalPinToPort(_en2);
 			en2pin = digitalPinToBitMask(_en2);		
 			*portOutputRegister(en2port) &= ~ en2pin;//low		
-		interrupts();	
+		ENABLE_IRQS();
 		#else
 			digitalWrite(_en2, LOW);
 		#endif
@@ -119,12 +119,12 @@ void LiquidCrystalNew::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 		digitalWrite(_backlightPin,_backLight);
 	}
 	#if defined(__FASTSWRITE2__)
-		noInterrupts();
+		BLOCK_IRQS();
 		*portOutputRegister(d0port) &= ~ d0pin;//low
 		*portOutputRegister(d1port) &= ~ d1pin;//low
 		*portOutputRegister(d2port) &= ~ d2pin;//low
 		*portOutputRegister(d3port) &= ~ d3pin;//low
-		interrupts();
+		ENABLE_IRQS();
 	#else
 		for (i=0;i<4;i++){
 			digitalWrite(_data_pins[i],LOW);
@@ -188,7 +188,7 @@ void LiquidCrystalNew::send(uint8_t value, byte mode) {
 	//delayMicroseconds(DELAYPERCHAR);
 	setDataMode(mode);	
 	#if defined(__FASTSWRITE2__)
-		noInterrupts();
+		BLOCK_IRQS();
 		if (value & 0x10){
 			*portOutputRegister(d0port) |= d0pin;//hi
 		} else {
@@ -230,7 +230,7 @@ void LiquidCrystalNew::send(uint8_t value, byte mode) {
 		} else {
 			*portOutputRegister(d3port) &= ~ d3pin;//low
 		}
-		interrupts();
+		ENABLE_IRQS();
 	#elif defined(__FASTSWRITE__)	
 		digitalWriteFast(_data_pins[0],value & 0x10);
 		digitalWriteFast(_data_pins[1],value & 0x20);
@@ -268,7 +268,7 @@ void LiquidCrystalNew::write4bits(byte value) {  //still used during init
  // 4x40 LCD with 2 controller chips with separate enable lines if we called w 2 enable pins and are on lines 2 or 3 enable chip 2  
 	if (_multipleChip && getChip()) en = _en2; 
 	#if defined(__FASTSWRITE2__)
-		noInterrupts();
+		BLOCK_IRQS();
 		if (v & 01){
 			*portOutputRegister(d0port) |= d0pin;//hi
 		} else {
@@ -289,7 +289,7 @@ void LiquidCrystalNew::write4bits(byte value) {  //still used during init
 		} else {
 			*portOutputRegister(d3port) &= ~ d3pin;//low
 		}
-		interrupts();
+		ENABLE_IRQS();
 	#elif defined(__FASTSWRITE__)	
 		digitalWriteFast(*pinptr++,v & 01);
 		digitalWriteFast(*pinptr++,(v >>= 1) & 01);
@@ -308,13 +308,13 @@ void LiquidCrystalNew::write4bits(byte value) {  //still used during init
 //Set data mode, want send data or command?  0:COMMAND -- 1:DATA
 void LiquidCrystalNew::setDataMode(byte mode) {
 	#if defined(__FASTSWRITE2__)
-		noInterrupts();
+		BLOCK_IRQS();
 		if (mode){
 			*portOutputRegister(rsport) |= rspin;//hi
 		} else {
 			*portOutputRegister(rsport) &= ~ rspin;//low
 		}
-		interrupts();
+		ENABLE_IRQS();
 	#elif defined (__FASTSWRITE__)
 		digitalWriteFast(_rs_pin,mode);
 	#else
@@ -324,11 +324,11 @@ void LiquidCrystalNew::setDataMode(byte mode) {
 
 void LiquidCrystalNew::pulseEnable(byte enPin) {
 	#if defined(__FASTSWRITE2__)
-		noInterrupts();
+		BLOCK_IRQS();
 		*portOutputRegister(en1port) |= en1pin;//hi
 		DelayNanoseconds(420);
 		*portOutputRegister(en1port) &= ~ en1port;//low
-		interrupts();
+		ENABLE_IRQS();
 		delayMicroseconds(25);
 	#elif defined (__FASTSWRITE__)
 		digitalWriteFast(enPin,HIGH);   // enable pulse must be >450ns

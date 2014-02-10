@@ -63,7 +63,7 @@ void LiquidCrystalNew_SSPI::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) 
 	pinMode(_clk,OUTPUT);
 	pinMode(_mosi,OUTPUT);
 #if defined(__FASTSWRITE2__)
-		noInterrupts();
+		BLOCK_IRQS();
 		sclkport = digitalPinToPort(_clk);
         sclkpin = digitalPinToBitMask(_clk);
 		mosiport = digitalPinToPort(_mosi);
@@ -71,7 +71,7 @@ void LiquidCrystalNew_SSPI::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) 
 		csport = digitalPinToPort(_cs);
         cspin = digitalPinToBitMask(_cs);
 		*portOutputRegister(csport) |= cspin;//hi
-		interrupts();
+		ENABLE_IRQS();
 #else
 		digitalWrite(_cs, HIGH);
 #endif
@@ -216,9 +216,9 @@ void LiquidCrystalNew_SSPI::backlight(byte val){
 void LiquidCrystalNew_SSPI::writeByte(byte cmd,byte value){
 //start send
 #if defined(__FASTSWRITE2__)
-	noInterrupts();
+	BLOCK_IRQS();
 	*portOutputRegister(csport) &= ~ cspin;//low
-	interrupts();
+	ENABLE_IRQS();
 #elif defined(__FASTSWRITE__)
 	digitalWriteFast(_cs, LOW);
 #else
@@ -233,9 +233,9 @@ void LiquidCrystalNew_SSPI::writeByte(byte cmd,byte value){
 
 	// now closing communication...
 #if defined(__FASTSWRITE2__)
-	noInterrupts();
+	BLOCK_IRQS();
 	*portOutputRegister(csport) |= cspin;//hi
-	interrupts();
+	ENABLE_IRQS();
 #elif defined(__FASTSWRITE__)
 	digitalWriteFast(_cs, HIGH);
 #else
@@ -246,14 +246,14 @@ void LiquidCrystalNew_SSPI::writeByte(byte cmd,byte value){
 #if defined(__FASTSWRITE2__)
 
 inline void LiquidCrystalNew_SSPI::altSPIwrite(uint8_t d) {
-	noInterrupts();
+	BLOCK_IRQS();
 	for (uint8_t bit = 0x80; bit; bit >>= 1) {
 		*portOutputRegister(sclkport) &= ~ sclkpin;//low
 		if(d & bit) *portOutputRegister(mosiport) |= mosipin;//hi
     else        *portOutputRegister(mosiport) &= ~ mosipin;//low
 		*portOutputRegister(sclkport) |= sclkpin;//hi
 	}
-	interrupts();
+	ENABLE_IRQS();
 }
 
 #elif defined(__FASTSWRITE__)
