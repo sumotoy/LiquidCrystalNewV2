@@ -181,7 +181,8 @@ go back to normal. I will publish a couple of tested easy example circuits when 
  - Beta version of shift register method. (v b0.91) 
  - Cleaned methods, added external config file (usable from sketch). (v b0.94)
  - Usable version. Tested w Arduino & Teensy3. Timings almost 99%ok.Added fast I2C for Teensy3. (v 0.99)<----
- -  Better timing for AVR and slow displays.
+ - Better timing for AVR and slow displays.
+ - Added a kind of IRQ protection for Teensy 3.1 and Arduinos. (Version:0.99b8)
 
 
 <b>Know Bugs:</b>-----------------------------------------------------------------------------------------------------
