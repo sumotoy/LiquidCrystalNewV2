@@ -1,7 +1,7 @@
 LiquidCrystalNew V2   
 ===================
-<div>Version <b>beta 0.99b8</b> </div>. Finally a beta stage. 
-Actually tested and verified all istances with Teensy3.0 - 3.1 (all speed) and Arduino duemilanove,uno,micro,mega and 1284P (using my IDE extension here in my github).
+<div>Version <b>beta 0.99b9</b> </div>. Finally a beta stage. 
+Actually tested and verified all istances with Teensy3.0 - 3.1 (all speed), Arduino duemilanove,uno,micro,mega and 1284P (using my IDE extension here in my github) and should work with all MCU's from Energia IDE.
 Double chip HD44780 LCD's tested and verified in all instances.
 Not tested yet with DUE (mine it's actually broken) but looks compile ok so I'm positive about.
 
@@ -32,11 +32,11 @@ Goals:
 
  - F A S T ! ! ! (trying to avoid digitalWrite)
  - compatible with standard LiquidCrystal.
- - compatible with most MCU's.
+ - compatible with most MCU's (included all Energia IDE compatible)
  - pin configurable to adapt other existing hardware.
  - possibly small memory impact.
  - possibly compact and small code.
- - can drive large 2xHD44780 chip displays.
+ - can drive large 2 x HD44780 chip displays.
  - large selection of popular GPIO or Shift Register chip to save MC pins.
  - cursor position from memory.
  - autowrap.
