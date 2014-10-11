@@ -34,7 +34,7 @@
     http://code.google.com/p/liquidcrystal440/
 	
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	Version:0.99b8
+	Version:0.99b7
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 */
 
@@ -42,10 +42,14 @@
 #ifndef _HD44780_H_
 #define _HD44780_H_
 
+#if defined(ENERGIA) // LaunchPad, FraunchPad and StellarPad specific
+#include "Energia.h"
+#else
 #if (ARDUINO <  100)
 	#include <WProgram.h>
 #else
 	#include <Arduino.h>
+#endif
 #endif
 
 #include <inttypes.h>

@@ -1,6 +1,12 @@
 #include <stdio.h>
 
 #include <inttypes.h>
+
+#if defined(ENERGIA) // LaunchPad, FraunchPad and StellarPad specific
+#include "Energia.h"
+	#include "pins_arduino.h"
+	#include "wiring_private.h"
+#else
 #if (ARDUINO <  100)
 	#include <WProgram.h>
 	#if defined(__FASTSWRITE2__)	
@@ -14,7 +20,7 @@
 		#include "wiring_private.h"
 	#endif
 #endif
-
+#endif
 #include "LiquidCrystalNew_SSPI.h"
 
 #if !defined(_LCDGPIOPINCONFIG_H_)

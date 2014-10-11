@@ -1,10 +1,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <inttypes.h>
+#if defined(ENERGIA) // LaunchPad, FraunchPad and StellarPad specific
+#include "Energia.h"
+#else
 #if (ARDUINO <  100)
 	#include <WProgram.h>
 #else
 	#include <Arduino.h>
+#endif
 #endif
 
 
