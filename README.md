@@ -31,6 +31,7 @@ To use existing commercial hardware shields or Piggy Back, you can load a person
 Goals:
 
  - F A S T ! ! ! (trying to avoid digitalWrite)
+ - SPI version use SPI Transactions (beta 0.99b9)
  - compatible with standard LiquidCrystal.
  - compatible with most MCU's (included all Energia IDE compatible)
  - pin configurable to adapt other existing hardware.
