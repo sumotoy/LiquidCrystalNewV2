@@ -56,9 +56,13 @@ LiquidCrystalNew_TWI::LiquidCrystalNew_TWI(const byte adrs,const byte chip,const
 
 void LiquidCrystalNew_TWI::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 
-	Wire.begin();
-	
-	TWBR = 12;
+	#if !defined(ENERGIA) // LaunchPad, FraunchPad and StellarPad specific
+		Wire.begin();
+		TWBR = 12;
+	#else
+		Wire.setModule(3);
+		Wire.begin();
+	#endif
 	delay(100);
 	if (!_chipType) writeByte(0x05,0b00100000);//use dedicated cs //MCP23008
 	writeByte(0x00,0x00);//set as out (IODIR)

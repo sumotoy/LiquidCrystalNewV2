@@ -43,6 +43,7 @@
 #ifndef _LiquidCrystalNew_SHR_h
 #define _LiquidCrystalNew_SHR_h
 
+
 #include <inttypes.h>
 
 #include "HD44780.h"

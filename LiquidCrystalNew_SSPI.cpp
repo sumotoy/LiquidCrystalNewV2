@@ -4,7 +4,7 @@
 
 #if defined(ENERGIA) // LaunchPad, FraunchPad and StellarPad specific
 #include "Energia.h"
-	#include "pins_arduino.h"
+	#include "pins_energia.h"
 	#include "wiring_private.h"
 #else
 #if (ARDUINO <  100)
@@ -27,7 +27,7 @@
 	#include "_configurations/pin_config_default.h"
 	//#error you should include a configuration file!!!
 #endif
-
+#if !defined(ENERGIA)
 //1/2 chip with software SPI GPIO (3 wire)
 LiquidCrystalNew_SSPI::LiquidCrystalNew_SSPI(const byte mosiPin,const byte clockPin,const byte csPin,const byte chip,const byte adrs){
 
@@ -290,5 +290,5 @@ inline void LiquidCrystalNew_SSPI::altSPIwrite(uint8_t d) {
 }
 #endif
 
-
+#endif
 

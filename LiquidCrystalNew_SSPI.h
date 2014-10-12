@@ -44,7 +44,7 @@
 #include <inttypes.h>
 
 #include "HD44780.h"
-
+#if !defined(ENERGIA)
 //#include "_configurations/gpio_config_MCP23X08.h"	// GPIO pin configuration, how the GPIO is connected to LCD		
 
 class LiquidCrystalNew_SSPI : public HD44780
@@ -75,5 +75,5 @@ private:
 	uint8_t cspin, mosipin, sclkpin;
 	#endif
 };	
-
+#endif
 #endif

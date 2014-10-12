@@ -75,8 +75,13 @@ void LiquidCrystalNew_T3TWI::begin(uint8_t cols, uint8_t lines, uint8_t dotsize)
 		const i2c_rate temp5[11] = {I2C_RATE_100,I2C_RATE_200,I2C_RATE_300,I2C_RATE_400,I2C_RATE_600,I2C_RATE_800,I2C_RATE_1000,I2C_RATE_1200,I2C_RATE_1500,I2C_RATE_2000,I2C_RATE_2400};
 		Wire.begin(I2C_MASTER,0x00,temp3[_pins],temp4[_pullup],temp5[_rate]);
 	#else
-		Wire.begin();
-		TWBR = 12;
+		#if !defined(ENERGIA) // LaunchPad, FraunchPad and StellarPad specific
+			Wire.begin();
+			TWBR = 12;
+		#else
+			Wire.setModule(3);
+			Wire.begin();
+		#endif
 	#endif
 	delay(100);
 	if (!_chipType) writeByte(0x05,0b00100000);//use dedicated cs //MCP23008
