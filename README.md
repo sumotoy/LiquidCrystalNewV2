@@ -4,6 +4,7 @@ LiquidCrystalNew V2
 Actually tested and verified all istances with Teensy3.0 - 3.1 (all speed), Arduino duemilanove,uno,micro,mega and 1284P (using my IDE extension here in my github) and should work with all MCU's from Energia IDE.
 Double chip HD44780 LCD's tested and verified in all instances.
 Not tested yet with DUE (mine it's actually broken) but looks compile ok so I'm positive about.
+Energia support just started, never tested! I'm sure there's something to fix for that.
 
 First, have to thank a lot <b>Paul Stoffregen</b> and <b>John Rain</b> http://code.google.com/p/liquidcrystal440/ , they truly help me a lot to discover a lot of unseen things about coding.
 I also thanks Tom and Limor and Paul, without their help this will never come to life.
