@@ -9,10 +9,13 @@
 
 #if defined(ENERGIA) // LaunchPad, FraunchPad and StellarPad specific
 	#define __ENERGIAX__
-#elif defined(__arm__) && defined(CORE_TEENSY) && defined(__MK20DX128__)//3.0													
+#elif defined(__MK20DX128__)//3.0													
 	#define __TEENSY3X__
 	#define __FASTSWRITE__
-#elif defined(__arm__) && defined(CORE_TEENSY) && defined(__MK20DX256__)//3.1
+#elif defined(__MK20DX256__)//3.1
+	#define __TEENSY3X__
+	#define __FASTSWRITE__
+#elif defined(__MKL26Z64__)//LC
 	#define __TEENSY3X__
 	#define __FASTSWRITE__
 #elif defined(ARDUINO) && defined(__arm__) && !defined(CORE_TEENSY)	//sometime ide makes confusion...											

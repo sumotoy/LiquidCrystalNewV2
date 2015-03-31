@@ -34,7 +34,8 @@
     http://code.google.com/p/liquidcrystal440/
 	
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	Version:0.99b7
+	Version:1.0 (uses my gpioExpander library !!!!)
+	-->>>  https://github.com/sumotoy/gpio_expander <<<---
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 */
 
@@ -43,6 +44,8 @@
 #define _LiquidCrystalNew_SPI_h
 
 #include <inttypes.h>
+#include <../SPI/SPI.h>//this chip needs SPI
+#include <../gpio_expander/mcp23s08.h>//you need to download gpioExpander library (https://github.com/sumotoy/gpio_expander)
 
 #include "HD44780.h"
 
@@ -62,7 +65,8 @@ public:
 	
 private:
 	byte				_cs;												//used only in SPI, the CS pin
-	byte				_adrs;												//SPI address or I2C address
+	byte				_adrs;												//SPI address
+	mcp23s08     		mygpio;												//from gpioExpander library
 	byte				_theData;											//8 bit of the GPIO chip or SR, not used in direct
 	byte				_avoidInit;
 	void 				initChip(uint8_t dotsize, byte witchEnablePin);
@@ -70,13 +74,7 @@ private:
 	void				writeByte(byte cmd,byte value);
 	void 				_setDataMode(byte mode);
 	void 				pulseEnable(byte witchEnablePin);					//
-	void 				writeGpio(byte value);								//
-	#if defined(__FASTSWRITE2__)
- 	void inline			sendSPI(byte data){ BLOCK_IRQS(); SPDR = data; while(!(SPSR & _BV(SPIF))); BLOCK_IRQS(); };
-	
-	volatile uint8_t 	csport;
-	uint8_t 			cspin;
-	#endif
+	void 				writeGpio(byte value);	
 };	
 
 #endif

@@ -58,7 +58,11 @@ void LiquidCrystalNew_TWI::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 
 	#if !defined(ENERGIA) // LaunchPad, FraunchPad and StellarPad specific
 		Wire.begin();
-		TWBR = 12;
+	#if ARDUINO >= 157
+		Wire.setClock(400000UL); // Set I2C frequency to 400kHz
+	#else
+		TWBR = ((F_CPU / 400000UL) - 16) / 2; // Set I2C frequency to 400kHz
+	#endif
 	#else
 		Wire.setModule(3);
 		Wire.begin();

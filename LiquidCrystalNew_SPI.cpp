@@ -1,11 +1,6 @@
 #include <stdio.h>
 
 #include <inttypes.h>
-#if defined(ENERGIA) // LaunchPad, FraunchPad and StellarPad specific
-#include "Energia.h"
-	#include "pins_energia.h"
-	#include "wiring_private.h"
-#else
 #if (ARDUINO <  100)
 	#include <WProgram.h>
 	#if defined(__FASTSWRITE2__)	
@@ -19,11 +14,12 @@
 		#include "wiring_private.h"
 	#endif
 #endif
-#endif
 
 #include "LiquidCrystalNew_SPI.h"
 
-#include <../SPI/SPI.h>
+#include <../SPI/SPI.h>//this chip needs SPI
+#include <../gpio_expander/mcp23s08.h>//include gpioExpander library
+//https://github.com/sumotoy/gpio_expander
 
 
 
@@ -70,38 +66,14 @@ LiquidCrystalNew_SPI::LiquidCrystalNew_SPI(const byte cs,const byte chip,const b
 
 void LiquidCrystalNew_SPI::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 // ---- start SPI initializations HERE
-if (!_avoidInit){
-	SPI.begin();
-	#if defined(__TEENSY3X__)
-	SPI.setClockDivider(SPI_CLOCK_DIV4); // 4 MHz (half speed)
-	SPI.setBitOrder(MSBFIRST);
-	SPI.setDataMode(SPI_MODE0);
-	#elif defined(__ARDUEX__)//dunnoyet!
-	SPI.setClockDivider(SPI_CLOCK_DIV4);
-	SPI.setBitOrder(MSBFIRST);
-	SPI.setDataMode(SPI_MODE0);
+//if (!_avoidInit){
+	#if defined (SPI_HAS_TRANSACTION)
+		mygpio.postSetup(_cs,_adrs,30000000);
 	#else
-/*
-SPI_CLOCK_DIV2    //8.0 MHz ----> ???
-SPI_CLOCK_DIV4    //4.0 MHz ----> ok
-SPI_CLOCK_DIV8    
-*/
-	SPI.setClockDivider(SPI_CLOCK_DIV4); 
-	SPI.setBitOrder(MSBFIRST);
-	SPI.setDataMode(SPI_MODE0);
+		mygpio.postSetup(_cs,_adrs);
 	#endif
-}	
-	pinMode(_cs, OUTPUT); //set data pin modes
-#if defined(__FASTSWRITE2__)
-	BLOCK_IRQS();
-	csport = digitalPinToPort(_cs);
-    cspin = digitalPinToBitMask(_cs);
-	*portOutputRegister(csport) |= cspin;//hi
-	ENABLE_IRQS();
-#else
-	digitalWrite(_cs, HIGH);
-#endif
-	delay(100);
+	mygpio.begin(_avoidInit);
+	mygpio.gpioPinMode(OUTPUT);
 // ---- now prepare GPIO chip and initialize it
 	if (_adrs > 0 && _adrs < 255){
 		writeByte(0x05,0b00101000);//HAEN -> ON (IOCON)
@@ -255,26 +227,5 @@ void LiquidCrystalNew_SPI::backlight(byte val){
 
 
 void LiquidCrystalNew_SPI::writeByte(byte cmd,byte value){
-//start send
-#if defined(__FASTSWRITE2__)
-	BLOCK_IRQS();
-	*portOutputRegister(csport) &= ~ cspin;//low
-	sendSPI(_adrs << 1);
-	sendSPI(cmd);
-	sendSPI(value); 
-	*portOutputRegister(csport) |= cspin;//hi
-	ENABLE_IRQS();
-#elif defined(__FASTSWRITE__)
-	digitalWriteFast(_cs, LOW);
-	SPI.transfer(_adrs << 1);
-	SPI.transfer(cmd);
-	SPI.transfer(value);
-	digitalWriteFast(_cs, HIGH);
-#else
-	digitalWrite(_cs, LOW);
-	SPI.transfer(_adrs << 1);
-	SPI.transfer(cmd);
-	SPI.transfer(value);
-	digitalWrite(_cs, HIGH);
-#endif
+	mygpio.gpioRegisterWriteByte(cmd,value);
 }
