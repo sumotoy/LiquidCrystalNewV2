@@ -61,6 +61,10 @@ This uses 3 wires SPI to drive an MCP23s08 connected to the LCD display as 4 bit
 shared with other 7 additional MCP23Sxx chips.
 It's still not fully optimized but actually it's the 'fastest' of all libraries I tested!
 
+you will need the gpioExander library from here:
+
+https://github.com/sumotoy/gpio_expander
+This library it's fully SPI Transaction compatible!
 
 <b>MCP23S08</b> connections
 
