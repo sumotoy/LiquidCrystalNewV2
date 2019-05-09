@@ -12,7 +12,13 @@
 #endif
 
 #include "LiquidCrystalNew_TWI.h"
+#if defined(ARDUINO) && ARDUINO >= 10606
+// Newer Arduino has correct include path set for library to library dependencies
+// See https://stackoverflow.com/a/38978273
+#include <Wire.h>
+#else
 #include <../Wire/Wire.h>
+#endif
 
 #if !defined(_LCDGPIOPINCONFIG_H_)
 	#include "_configurations/pin_config_default.h"

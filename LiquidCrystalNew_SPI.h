@@ -44,8 +44,16 @@
 #define _LiquidCrystalNew_SPI_h
 
 #include <inttypes.h>
+
+#if defined(ARDUINO) && ARDUINO >= 10606
+// Newer Arduino has correct include path set for library to library dependencies
+// See https://stackoverflow.com/a/38978273
+#include <SPI.h>
+#include <mcp23s08.h>
+#else
 #include <../SPI/SPI.h>//this chip needs SPI
 #include <../gpio_expander/mcp23s08.h>//you need to download gpioExpander library (https://github.com/sumotoy/gpio_expander)
+#endif
 
 #include "HD44780.h"
 

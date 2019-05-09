@@ -21,11 +21,21 @@
 
 #include "LiquidCrystalNew_T3TWI.h"
 
+#if defined(ARDUINO) && ARDUINO >= 10606
+// Newer Arduino has correct include path set for library to library dependencies
+// See https://stackoverflow.com/a/38978273
+#if defined(__TEENSY3X__)
+	#include <i2c_t3.h>
+#else
+	#include <Wire.h>
+#endif
+#else
 #if defined(__TEENSY3X__)
 	#include <../i2c_t3/i2c_t3.h>
 #else
 	#include <../Wire/Wire.h>
 #endif
+#endif // defined(ARDUINO) && ARDUINO >= 10606
 
 //1/2 chip with software SPI GPIO (3 wire)
 LiquidCrystalNew_T3TWI::LiquidCrystalNew_T3TWI(const byte adrs,byte pins,byte pullup,byte rate,const byte chip,const byte chipType){
